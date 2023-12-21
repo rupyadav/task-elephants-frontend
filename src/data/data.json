@@ -1,0 +1,195 @@
+{
+  "Header": {
+    "title": "LEAP INTO FINANCIAL EXCELLENCE",
+    "paragraph": "Customized Accounting, Payroll, Tax, and Finance Services for Your Business Needs.",
+    "subparagraph": "Panamera Groups offers versatile outsourced financial services including: accounting, payroll, tax, and finance solutions. We offer customize solutions to suit businesses at any stage of their lifecycle. Our professional services are offered on an hourly or fixed rate basis."
+  },
+  "About": {
+    "heading": "Your Trusted Accounting Partner for Offshore Growth and Efficiency",
+    "paragraph1": "We are your professional accounting outsourcing partner to help you build and grow an offshore team. We provide businesses with outsourced accounting, payroll, tax and finance solutions on a fixed fee basis. No matter your size, we can tailor our service to fit your needs at every stage of your company's life cycle.",
+    "paragraph2": "At Panamera, we create value for our clients by simply following a specialized outsourcing process. This process helps us to establish seamless transition and also quick completion of the project assigned to us within the agreed time and a pre-determined budget.",
+    "aboutUsList": [
+      "DEPENDABILITY",
+      "COST - EFFECTIVENESS",
+      "METHODOLOGY",
+      "PREVIOUS WORK EXPERIENCE"
+    ]
+  },
+  "Gallery": [
+    {
+      "title": "Project Title",
+      "largeImage": "img/portfolio/01-large.jpg",
+      "smallImage": "img/portfolio/01-small.jpg"
+    },
+    {
+      "title": "Project Title",
+      "largeImage": "img/portfolio/02-large.jpg",
+      "smallImage": "img/portfolio/02-small.jpg"
+    },
+    {
+      "title": "Project Title",
+      "largeImage": "img/portfolio/03-large.jpg",
+      "smallImage": "img/portfolio/03-small.jpg"
+    },
+    {
+      "title": "Project Title",
+      "largeImage": "img/portfolio/04-large.jpg",
+      "smallImage": "img/portfolio/04-small.jpg"
+    },
+    {
+      "title": "Project Title",
+      "largeImage": "img/portfolio/05-large.jpg",
+      "smallImage": "img/portfolio/05-small.jpg"
+    },
+    {
+      "title": "Project Title",
+      "largeImage": "img/portfolio/06-large.jpg",
+      "smallImage": "img/portfolio/06-small.jpg"
+    },
+    {
+      "title": "Project Title",
+      "largeImage": "img/portfolio/07-large.jpg",
+      "smallImage": "img/portfolio/07-small.jpg"
+    },
+    {
+      "title": "Project Title",
+      "largeImage": "img/portfolio/08-large.jpg",
+      "smallImage": "img/portfolio/08-small.jpg"
+    },
+    {
+      "title": "Project Title",
+      "largeImage": "img/portfolio/09-large.jpg",
+      "smallImage": "img/portfolio/09-small.jpg"
+    }
+  ],
+  "Services": [
+    {
+      "url": "img/statment.png",
+      "name": "FINANCIAL STATEMENTS",
+      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at."
+    },
+    {
+      "url": "img/bank.png",
+      "name": "BANK RECONCILIATION",
+      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at."
+    },
+    {
+      "url": "img/book.png",
+      "name": "BOOK KEEPING",
+      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at."
+    },
+    {
+      "url": "img/payroll.png",
+      "name": "PAYROLL SERVICES",
+      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at."
+    },
+    {
+      "url": "img/tax.png",
+      "name": "TAX PREPARATION",
+      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at."
+    },
+    {
+      "url": "img/account.png",
+      "name": "ACCOUNT PAYABLE & RECEIVABLE",
+      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at."
+    }
+  ],
+  "DosAndDonts" : {
+    "dos" : [
+      "Understand your business and your specific needs",
+      "Strive for excellence accredited to our core completencies and technological supremacy",
+      "Value human expertise with a pool of dedicated, result-droven experts",
+      "Delivery guarantee by going to far-reaching length to present quality outsourcing services",
+      "Integrate with your in-house existing team members by providing valuable support services"
+    ],
+    "donts" : [
+      "Forget you once you have signed up",
+      "Neglect data security - the highest level of data security and data is housing in the USA"
+    ]
+  },
+  "Outsource" : {
+    "why1" : [
+      "Focus On Core Business",
+      "Data Security And Data Backup",
+      "Industry-Specefic Accounting Services",
+      "Global Impact Of Environmental Changes"
+    ],
+    "why2" : [
+      "Experties And Expenses",
+      "Reduced Expences",
+      "Fast Turnaround Time",
+      "Customized Solutions"
+    ]
+  },
+  "Testimonials": [
+    {
+      "img": "img/testimonials/01.jpg",
+      "text": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at.\"",
+      "name": "John Doe"
+    },
+    {
+      "img": "img/testimonials/02.jpg",
+      "text": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at.\"",
+      "name": "Johnathan Doe"
+    },
+    {
+      "img": "img/testimonials/03.jpg",
+      "text": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at.\"",
+      "name": "John Doe"
+    },
+    {
+      "img": "img/testimonials/04.jpg",
+      "text": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at.\"",
+      "name": "Johnathan Doe"
+    },
+    {
+      "img": "img/testimonials/05.jpg",
+      "text": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at.\"",
+      "name": "John Doe"
+    },
+    {
+      "img": "img/testimonials/06.jpg",
+      "text": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at.\"",
+      "name": "Johnathan Doe"
+    }
+  ],
+  "Team": [
+    {
+      "img": "img/team/01.jpg",
+      "name": "John Doe",
+      "job": "Director"
+    },
+    {
+      "img": "img/team/02.jpg",
+      "name": "Mike Doe",
+      "job": "Senior Designer"
+    },
+    {
+      "img": "img/team/03.jpg",
+      "name": "Jane Doe",
+      "job": "Senior Designer"
+    },
+    {
+      "img": "img/team/04.jpg",
+      "name": "Karen Doe",
+      "job": "Project Manager"
+    }
+  ],
+  "Contact": {
+    "usAddress": "1296 Dartford Drive Tarpon Springs FL 34688 ",
+    "indAddress":"1st Floor Suite No 4, Anora Residency, Bolinj Road Virar West – 401303 Mumbai, Maharashtra",
+    "phone": "1-833-743-2665",
+    "email": "info@company.com",
+    "facebook": "fb.com",
+    "twitter": "twitter.com",
+    "youtube": "youtube.com"
+  },
+  "Features": [
+    {
+      "title": "Customized Accounting, Payroll, Tax, and Finance Services for Your Business Needs"
+    },
+    {
+      "title": "Panamera Groups offers versatile outsourced financial services including: accounting, payroll, tax, and finance solutions. We offer customize solutions to suit businesses at any stage of their lifecycle. Our professional services are offered on an hourly or fixed rate basis."
+    }
+  ]
+}
