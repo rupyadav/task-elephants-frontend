@@ -6,9 +6,9 @@ export const Outsource = (props) => {
       <div className="container">
       <div className="section-title">
           <h2>Why Outsource?</h2>
-          <h3>
+          {/* <h3>
           Take a Leap
-          </h3>
+          </h3> */}
           <p>
           Among the primary things that people take into account prior to outsourcing their services to a provider is their dependability, cost-effectiveness, previous work experience and most significantly their methodology of work. The benefits include:
           </p>

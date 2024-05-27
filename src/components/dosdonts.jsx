@@ -5,6 +5,10 @@ export const DosDonts = (props) => {
     <div id="dosdonts" className="text-center">
       <div className="container">
         <div className="row">
+          <div className="col-md-3 col-xs-12">
+          <img src="img/dosDonts.jpg"alt="..." className="dosDonts-img" />
+          </div>
+        <div className="col-md-9 col-xs-12">
         <div className="col-md-12 section-title">
           <h2>What We Do</h2>
           <div className="list-style dos">
@@ -32,6 +36,7 @@ export const DosDonts = (props) => {
                   </ul>
                 </div>
                 </div>
+        </div>
         </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from 'react';
+import LoginDialog from "./LoginDialog";
 import { LoginModal } from "./LoginModal";
 
 export const Navigation = (props) => {
@@ -29,8 +30,7 @@ export const Navigation = (props) => {
               <span className="icon-bar"></span>{" "}
             </button>
             <a className="navbar-brand page-scroll" href="#page-top">
-            {/* <img src="img/logo.png" alt="logo" /> */}
-              Panamera Consulting
+            <img src="img/logo-black.png" alt="logo" className="responsive-logo" />
             </a>{" "}
           </div>
 
@@ -54,11 +54,11 @@ export const Navigation = (props) => {
                   Services
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <a href="#team" className="page-scroll">
                   Team
                 </a>
-              </li>
+              </li> */}
               <li>
                 <a href="#contact" className="page-scroll">
                   Contact
@@ -66,11 +66,13 @@ export const Navigation = (props) => {
               </li>
               <li>
                 <a onClick={handleShow} className="page-scroll">
-                  Client Login
+                  Login
                 </a>
               </li>
             </ul>
-            {show && <LoginModal show={show} handleClose={handleClose} />}
+            {/* {show && <LoginModal show={show} handleClose={handleClose} />} */}
+            {/* {show && <Login show={show} handleClose={handleClose} />} */}
+            {show && <LoginDialog show={show} handleClose={handleClose} />}
           </div>
         </div>
       </nav>

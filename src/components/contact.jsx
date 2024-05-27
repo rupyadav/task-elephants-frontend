@@ -43,7 +43,7 @@ export const Contact = (props) => {
                 Our executive will contact you ASAP
                 </p>
               </div>
-              <form name="sentMessage" validate onSubmit={handleSubmit}>
+              <form name="sentMessage" onSubmit={handleSubmit}>
                 <div className="row">
                   <div className="col-md-6">
                     <div className="form-group">
@@ -126,7 +126,7 @@ export const Contact = (props) => {
       <div id="footer">
         <div className="container text-center">
           <p>
-            &copy;Copyrights 2023 | Panamera Consulting | All Rights Reserved
+            &copy;Copyrights 2024 | Task Elepahnts | All Rights Reserved
           </p>
         </div>
       </div>

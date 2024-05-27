@@ -1,12 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 body,
 html {
-  font-family: "Open Sans", sans-serif;
+  font-family: "Poppins,sans-serif";
   text-rendering: optimizeLegibility !important;
   -webkit-font-smoothing: antialiased !important;
   color: #777;
   font-weight: 400;
   width: 100% !important;
-  height: 100% !important;
+  /* height: 100% !important; */
+  background-color: rgb(35, 35, 35) !important;
 }
 
 body {
@@ -91,8 +93,18 @@ hr {
   padding: 15px;
   transition: all 0.8s;
 }
+/* #menu .navbar-brand {
+  float: left;
+  height: 50px;
+  padding: 0px 0px !important;
+  font-size: 18px;
+  line-height: 20px;
+} */
+
 #menu.navbar-default {
-  background-color: #fff;
+  background-color: rgb(29, 29, 27);
+  /* background-color: #e3ded9; */
+  color: #fff;
   border-color: rgba(231, 231, 231, 0);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
 }
@@ -100,13 +112,13 @@ hr {
   font-family: "Raleway", sans-serif;
   font-size: 24px;
   font-weight: 700;
-  color: #333;
+  color: #fff;
   text-transform: uppercase;
 }
 #menu.navbar-default .navbar-nav > li > a {
   font-family: "Lato", sans-serif;
   text-transform: uppercase;
-  color: #555;
+  color: #fff;
   font-size: 15px;
   font-weight: 400;
   padding: 8px 2px;
@@ -120,7 +132,8 @@ hr {
   bottom: -1px;
   width: 0;
   height: 2px;
-  background: linear-gradient(to right, #6372ff 0%, #5ca9fb 100%);
+  /* background: #5d5650; */
+  background: #fff;
   content: "";
   transition: width 0.2s;
 }
@@ -141,7 +154,8 @@ hr {
   bottom: -1px !important;
   width: 100% !important;
   height: 2px !important;
-  background: linear-gradient(to right, #6372ff 0%, #5ca9fb 100%) !important;
+  /* background: #f4d956; */
+  background: #5d5650;
   content: "" !important;
   transition: width 0.2s !important;
 }
@@ -197,8 +211,8 @@ hr {
   font-family: "Raleway", sans-serif;
   text-transform: uppercase;
   color: #fff;
-  background-color: #5ca9fb;
-  background-image: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9));
+  /* background-color: #000; */
+  /* background-image: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9)); */
   padding: 14px 34px;
   letter-spacing: 1px;
   margin: 0;
@@ -206,7 +220,7 @@ hr {
   font-weight: 500;
   border-radius: 25px;
   transition: all 0.5s linear;
-  border: 0;
+  border: 1px solid #f4d956;
 }
 .modal-btn-custom:hover,
 .btn-custom:hover,
@@ -214,9 +228,9 @@ hr {
 .btn-custom.focus,
 .btn-custom:active,
 .btn-custom.active {
-  color: #fff;
+  color: #000;
   background-image: none;
-  background-color: #6372ff;
+  background-color: #fff;
 }
 .btn:active,
 .btn.active {
@@ -240,7 +254,7 @@ a:focus,
   display: table;
   width: 100%;
   padding: 0;
-  background: url(../img/fish.png) center center no-repeat;
+  background: url(../img/tech-daily.jpg) center center no-repeat;
   background-color: #e5e5e5;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -248,13 +262,13 @@ a:focus,
   -o-background-size: cover;
 }
 .intro .overlay {
-  /* background: rgba(0, 0, 0, 0.4); */
-  background: linear-gradient(to right, rgba(106, 17, 203, 0.7), rgba(37, 117, 252, 0.5));
+  /* background:  rgb(130, 130, 130); */
+  background: linear-gradient(to right, rgba(45, 45, 45, 0.4), rgba(28, 28, 28, 0.4));
 }
 .intro h1 {
   font-family: "Raleway", sans-serif;
   color: #fff;
-  font-size: 60px;
+  font-size: 50px;
   font-weight: 700;
   text-transform: uppercase;
   margin-top: 0;
@@ -271,6 +285,7 @@ a:focus,
   line-height: 30px;
   margin: 0 auto;
   margin-bottom: 30px;
+  width: 80%;
 }
 header .intro-text {
   padding-top: 150px;
@@ -305,20 +320,24 @@ header .intro-text {
 #about h3 {
   font-size: 22px;
   margin: 0 0 20px;
+  color: rgb(130, 130, 130);
 }
 #about h2 {
   position: relative;
   margin-bottom: 15px;
   padding-bottom: 15px;
   text-align: center;
+  color: #fff;
 }
 #about h4 {
   text-align: center;
+  color: rgb(130, 130, 130);
 }
 #about h2::after {
   position: absolute;
   content: "";
-  background: linear-gradient(to right, #5ca9fb 0%, #6372ff 100%);
+  /* background: linear-gradient(to right, #5ca9fb 0%, #6372ff 100%); */
+  background: #f4d956;
   height: 4px;
   width: 60px;
   bottom: 0;
@@ -352,57 +371,75 @@ header .intro-text {
   width: 520px;
   /* margin-top: 10px; */
   height: 300px;
-  background: #fff;
+  /* background: #fff; */
   border-right: 0;
   box-shadow: 0 0 50px rgba(0, 0, 0, 0.06);
 }
 #about p {
   line-height: 24px;
   margin: 30px 0;
+  font-size: 18px;
+  font-weight: 400;
 }
 .container4 {
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   padding-top: 20px;
   
 }
 .card{
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   font-family: 'Nohemi', sans-serif;
   letter-spacing: 3%;
   text-transform: uppercase;
-  background: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9));
   color: #fff;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 24.84px;
-  width: 200px;
+  /* width: 200px; */
   padding: 35px 30px 35px 30px;
-  border-radius: 16px;
+  /* border-radius: 16px; */
   align-items: center;
   text-align: center;
+  border: 1px;
+}
+.card-1{
+  background: rgb(104, 140, 232);
+}
+.card-2{
+  background:  rgb(87, 125, 221);
+}
+.card-3{
+  background: rgb(80, 116, 205);
+}
+.card-4{
+  background:  rgb(70, 106, 185);
 }
 .card:hover{
-  color: #fff;
-  background-image: none;
-  background-color: #6372ff;
-  transform: translateY(2px);
-  transition: all;
-  cursor: pointer;
+  /* color: #fff; */
+  /* background-image: none; */
+  /* background-color: #6372ff; */
+  /* transform: translateY(2px); */
+  /* transition: all; */
+  /* cursor: pointer; */
 }
 
 #about > div > div.row > div:nth-child(3) > div > div > div > img{
-  width: 100px;
+  width: 120px;
   /* margin-top: 10px; */
-  height: 100px;
-  background: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9));
+  height: 120px;
+  /* background: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9)); */
   border-right: 0;
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.06);
+  /* box-shadow: 0 0 50px rgba(0, 0, 0, 0.06); */
   /* animation: fadeInAnimation 5s; */
 }
 /* Services Section */
 #services {
   padding: 100px 0;
-  background: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9));;
+  /* background: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9)); */
+  background: rgb(35, 35, 35);
   color: #fff;
 }
 #services .service-desc {
@@ -414,7 +451,7 @@ header .intro-text {
 #services .section-title h2::after {
   position: absolute;
   content: "";
-  background: rgba(255, 255, 255, 0.3);
+  background: #f4d956;
   height: 4px;
   width: 60px;
   bottom: 0;
@@ -433,17 +470,34 @@ header .intro-text {
 }
 #services > div > div.row > div > img{
   background-color: #fff;
+  height: 150px;
+  width: 150px;
+}
+#services > div > div.row > div > img:hover{
+  background-color: #fff;
+  height: 160px;
+  width: 160px;
 }
 #services h3 {
   font-weight: 500;
   padding: 5px 0;
-  color: #fff;
+  color: rgb(130, 130, 130);
+  font-size: 18px;
 }
 #services p {
-  color: rgba(255, 255, 255, 0.75);
+  color: rgb(130, 130, 130);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 24px;
 }
 #services .service-desc {
   margin-bottom: 40px;
+}
+#services .service-desc h3 {
+  font-weight: 500;
+  padding: 5px 0;
+  color: #f4d956;
+  font-size: 16px;
 }
 /* Dos and Donts Section */
 #dosdonts .section-title {
@@ -452,10 +506,16 @@ header .intro-text {
 #dosdonts {
   padding: 50px 0;
 }
+#dosdonts h2{
+  color: #fff;
+}
+#dosdonts .section-title h2::after {
+  background: #f4d956;
+}
 #dosdonts .list-style li:before {
   content: "\f00c";
   font-family: "FontAwesome";
-  color: #5ca9fb;
+  color: #f4d956;
   font-size: 18px;
   font-weight: 300;
   padding-right: 8px;
@@ -463,13 +523,14 @@ header .intro-text {
 #dosdonts > div > div > div:nth-child(2) > div > div > ul > li:before {
   content: "\f00d";
   font-family: "FontAwesome";
-  color: #d81313;
+  color: #f4d956;
   font-size: 18px;
   font-weight: 300;
   padding-right: 8px;
 }
 #dosdonts .list-style li{
   font-size: 18px;
+  color: rgb(130, 130, 130);
 }
 #dosdonts .dos{
   margin: auto;
@@ -483,10 +544,17 @@ header .intro-text {
   padding-top: 10px;
   padding-left: 100px;
 }
+.dosDonts-img{
+  margin-top: 120px;
+  height: 350px;
+  width: 350px;
+
+}
 /* Why Outsource Section */
 #outsource{
   padding: 50px 0;
-  background: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9));
+  /* background: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9)); */
+  background: rgb(35, 35, 35);
   color: #fff;
 }
 #outsource h2{
@@ -495,24 +563,34 @@ header .intro-text {
 #outsource h3 {
   font-weight: 500;
   padding: 5px 0;
-  color: #fff;
+  color: rgb(130, 130, 130);
 }
 #outsource .list-style li:before {
   content: "\f024";
   font-family: "FontAwesome";
-  color: #5ca9fb;
+  color: #f4d956;
   font-size: 18px;
   font-weight: 300;
   padding-right: 8px;
 }
 #outsource .list-style li{
   font-size: 18px;
+  color: rgb(130, 130, 130);
+}
+#outsource p {
+  color: rgb(130, 130, 130);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 24px;
 }
 #outsource .outsource-div{
   margin: auto;
   width: 100%;
   padding-top: 10px;
   padding-left: 100px;
+}
+#outsource .section-title h2::after {
+  background: #f4d956;
 }
 /* Testimonials Section */
 #testimonials {
@@ -558,12 +636,24 @@ header .intro-text {
 #team {
   padding: 100px 0;
 }
+#team h2{
+  color: #fff;
+}
+#team .section-title h2::after {
+  background: #f4d956;
+}
 #team h4 {
   margin: 5px 0;
+  color: #f4d956;
+  font-weight: 600;
+}
+#team p {
+  color: rgb(130, 130, 130);
+  line-height: 24px;
 }
 #team .team-img {
-  width: 240px;
-  height: 240px;
+  width: 150px;
+  height: 150px;
 }
 #team .thumbnail {
   background: transparent;
@@ -573,17 +663,40 @@ header .intro-text {
   padding: 10px 0 0;
   color: #888;
 }
+#team .card{
+  font-family: 'Nohemi', sans-serif;
+  letter-spacing: 3%;
+  text-transform: uppercase;
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24.84px;
+  /* width: 200px; */
+  padding: 35px 30px 35px 30px;
+  /* border-radius: 16px; */
+  align-items: center;
+  text-align: center;
+  border: 1px;
+  background-color: #000;
+}
+.caption:hover{
+  /* background-color: #608dfd; */
+  color: #fff;
+  height: 80px;
+}
 /* Contact Section */
 #contact {
   padding: 100px 0;
-  background: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9));
-  color: rgba(255, 255, 255, 0.75);
+  /* background: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9)); */
+  background: rgb(35, 35, 35);
+  color: #fff;
 }
 #contact .section-title {
   margin-bottom: 20px;
 }
 #contact .section-title p {
-  font-size: 16px;
+  font-size: 18px;
+  line-height: 24px;
 }
 #contact h2 {
   color: #fff;
@@ -594,18 +707,24 @@ header .intro-text {
 #contact .section-title h2::after {
   position: absolute;
   content: "";
-  background: rgba(255, 255, 255, 0.3);
+  background: #f4d956;
   height: 4px;
   width: 60px;
   bottom: 0;
   left: 30px;
 }
 #contact h3 {
-  color: #fff;
+  color: rgb(130, 130, 130);
   margin-top: 80px;
   margin-bottom: 25px;
   padding-bottom: 20px;
   font-weight: 400;
+}
+#contact p {
+  color: rgb(130, 130, 130);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 24px;
 }
 #contact form {
   padding-top: 20px;
@@ -625,6 +744,7 @@ header .intro-text {
 }
 label {
   font-size: 12px;
+  color: rgb(130, 130, 130);
   font-weight: 400;
   font-family: "Open Sans", sans-serif;
   float: left;
@@ -701,7 +821,7 @@ label {
 }
 /* Footer Section*/
 #footer {
-  background: #f6f6f6;
+  background: rgb(35, 35, 35);
   padding: 10px 0;
 }
 #footer p {
@@ -824,6 +944,7 @@ label {
 }
 .card{
   padding: 16px;
+  width: 100%;
 }
 #dosdonts .dos{
   width: 100%;
@@ -876,5 +997,24 @@ label {
 .margin-bottom-30{
   margin-bottom: 30px;
 }
+}
+
+
+.responsive-logo {
+  height: auto;
+  width: 100px; /* Default width */
+  transition: width 0.3s ease-in-out;
+}
+
+@media (max-width: 768px) {
+  .responsive-logo {
+    width: 70px; /* Smaller width on smaller screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .responsive-logo {
+    width: 50px; /* Even smaller width on very small screens */
+  }
 }
 

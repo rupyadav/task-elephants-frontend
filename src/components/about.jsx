@@ -16,21 +16,21 @@ export const About = (props) => {
           <div className="col-xs-12 col-md-12">
             <div className="about-text">
             <h4>Among the primary things that people take into account prior to outsourcing their services to a provider is their:</h4>
-            <div class="container4">
-            <div class="card">
-                <img class="thumb" src="img/thumb.png" alt="thumb" /><br/>
+            <div className="container4">
+            <div className="card card-1">
+                <img className="thumb" src="img/thumb.png" alt="thumb" /><br/>
                 <span>Dependability</span>
             </div>
-            <div class="card">
-                <img class="rs" src="img/rs.png" alt="rs" /><br/>
+            <div className="card card-2">
+                <img className="rs" src="img/rs.png" alt="rs" /><br/>
                 <span>Cost - Effectiveness</span>
             </div>
-            <div class="card">
-                <img class="path" src="img/path.png" alt="path" /><br/>
+            <div className="card card-3">
+                <img className="path" src="img/path.png" alt="path" /><br/>
                 <span>Methodology</span>
             </div>
-            <div class="card">
-                <img class="pointer" src="img/pointer.png" alt="pointer" /><br/>
+            <div className="card card-4">
+                <img className="pointer" src="img/pointer.png" alt="pointer" /><br/>
                 <span>Previous work experience</span>
             </div>
         </div>

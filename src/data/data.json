@@ -1,13 +1,15 @@
 {
   "Header": {
     "title": "LEAP INTO FINANCIAL EXCELLENCE",
-    "paragraph": "Customized Accounting, Payroll, Tax, and Finance Services for Your Business Needs.",
-    "subparagraph": "Panamera Groups offers versatile outsourced financial services including: accounting, payroll, tax, and finance solutions. We offer customize solutions to suit businesses at any stage of their lifecycle. Our professional services are offered on an hourly or fixed rate basis."
+    "features1": "Bespoke Book Keeping ",
+    "features2":"Finance Services ",
+    "paragraph": "for Your Business Needs.",
+    "subparagraph": "Task Elepahnts Groups offers versatile outsourced financial services including: accounting, payroll, tax, and finance solutions. We offer customize solutions to suit businesses at any stage of their lifecycle. Our professional services are offered on an hourly or fixed rate basis."
   },
   "About": {
     "heading": "Your Trusted Accounting Partner for Offshore Growth and Efficiency",
     "paragraph1": "We are your professional accounting outsourcing partner to help you build and grow an offshore team. We provide businesses with outsourced accounting, payroll, tax and finance solutions on a fixed fee basis. No matter your size, we can tailor our service to fit your needs at every stage of your company's life cycle.",
-    "paragraph2": "At Panamera, we create value for our clients by simply following a specialized outsourcing process. This process helps us to establish seamless transition and also quick completion of the project assigned to us within the agreed time and a pre-determined budget.",
+    "paragraph2": "At Task Elepahnts, we create value for our clients by simply following a specialized outsourcing process. This process helps us to establish seamless transition and also quick completion of the project assigned to us within the agreed time and a pre-determined budget.",
     "aboutUsList": [
       "DEPENDABILITY",
       "COST - EFFECTIVENESS",
@@ -64,33 +66,18 @@
   ],
   "Services": [
     {
-      "url": "img/statment.png",
-      "name": "FINANCIAL STATEMENTS",
-      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at."
-    },
-    {
-      "url": "img/bank.png",
+      "url": "img/bank-r.png",
       "name": "BANK RECONCILIATION",
       "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at."
     },
     {
-      "url": "img/book.png",
+      "url": "img/book-keeping.png",
       "name": "BOOK KEEPING",
       "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at."
     },
     {
-      "url": "img/payroll.png",
+      "url": "img/payroll-services.png",
       "name": "PAYROLL SERVICES",
-      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at."
-    },
-    {
-      "url": "img/tax.png",
-      "name": "TAX PREPARATION",
-      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at."
-    },
-    {
-      "url": "img/account.png",
-      "name": "ACCOUNT PAYABLE & RECEIVABLE",
       "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at."
     }
   ],
@@ -109,14 +96,12 @@
   },
   "Outsource" : {
     "why1" : [
-      "Focus On Core Business",
-      "Data Security And Data Backup",
-      "Industry-Specefic Accounting Services",
-      "Global Impact Of Environmental Changes"
+      "Focus On Your Core Business",
+      "Increase your Scalability",
+      "Imporve your Profit Margins"
     ],
     "why2" : [
-      "Experties And Expenses",
-      "Reduced Expences",
+      "Reduced Payroll Expences",
       "Fast Turnaround Time",
       "Customized Solutions"
     ]
@@ -130,7 +115,8 @@
     {
       "img": "img/testimonials/02.jpg",
       "text": "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at.\"",
-      "name": "Johnathan Doe"
+      "name": "Johnathan",
+      "lastname": "Doe"
     },
     {
       "img": "img/testimonials/03.jpg",
@@ -155,22 +141,22 @@
   ],
   "Team": [
     {
-      "img": "img/team/01.jpg",
+      "img": "img/avatar.jpg",
       "name": "John Doe",
       "job": "Director"
     },
     {
-      "img": "img/team/02.jpg",
+      "img": "img/avatar.jpg",
       "name": "Mike Doe",
       "job": "Senior Designer"
     },
     {
-      "img": "img/team/03.jpg",
+      "img": "img/avatar.jpg",
       "name": "Jane Doe",
       "job": "Senior Designer"
     },
     {
-      "img": "img/team/04.jpg",
+      "img": "img/avatar.jpg",
       "name": "Karen Doe",
       "job": "Project Manager"
     }
@@ -189,7 +175,7 @@
       "title": "Customized Accounting, Payroll, Tax, and Finance Services for Your Business Needs"
     },
     {
-      "title": "Panamera Groups offers versatile outsourced financial services including: accounting, payroll, tax, and finance solutions. We offer customize solutions to suit businesses at any stage of their lifecycle. Our professional services are offered on an hourly or fixed rate basis."
+      "title": "Task Elepahnts Groups offers versatile outsourced financial services including: accounting, payroll, tax, and finance solutions. We offer customize solutions to suit businesses at any stage of their lifecycle. Our professional services are offered on an hourly or fixed rate basis."
     }
   ]
 }

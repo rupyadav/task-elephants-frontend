@@ -7,17 +7,16 @@ export const Services = (props) => {
         <div className="section-title">
           <h2>Our Services</h2>
           <h3>
-          Comprehensive Financial Services Tailored to Your Business Needs
+          Comprehensive Services Tailored to Your Business Needs
           </h3>
           <p>
-          Panamera provides comprehensive financial services, 
-          including the preparation of accurate financial statements,
-           efficient payroll management, meticulous bank reconciliation, 
-           expert tax preparation, precise bookkeeping, and proficient management of 
-           accounts payable and receivable. 
+          Task Elepahnts provides comprehensive financial services, 
+          including the preparation of Book keeping records, bank reconciliation, 
            Our dedicated team ensures your financial operations run smoothly, 
            allowing you to focus on growing your business.
           </p>
+          <p>We offer customize solutions to suit businesses at any stage of their lifecycle.
+             Our professional services are offered on an hourly or fixed rate basis.</p>
         </div>
         <div className="row">
           {props.data

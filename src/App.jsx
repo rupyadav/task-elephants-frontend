@@ -41,9 +41,9 @@ const App = () => {
       <FadeInSection>
         <Outsource data={landingPageData.Outsource} />
       </FadeInSection>
-      <FadeInSection>
+      {/* <FadeInSection>
         <Team data={landingPageData.Team} />
-      </FadeInSection>
+      </FadeInSection> */}
       <FadeInSection>
         <Contact data={landingPageData.Contact} />
       </FadeInSection>
