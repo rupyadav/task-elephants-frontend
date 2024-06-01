@@ -20,13 +20,13 @@ export const Header = (props) => {
             <div className="row">
               <div className="col-md-8 col-md-offset-2 intro-text">
                 <br></br>
-                <h1 style={{ fontFamily: 'Poppins,sans-serif'}}>
+                <h1 style={{ fontFamily: 'Armada Bold'}}>
                   {props.data ? props.data.title : "Loading"}
                   <span></span>
                 </h1>
                 <br></br>
                 <br></br>
-                <p style={{ fontFamily: 'Poppins,sans-serif'}}>
+                <p style={{ fontFamily: 'Barlow Semibold'}}>
                   {count === 1 && <span style={{color: '#f4d956', fontWeight: 600, fontSize: '26px'}}>{props.data?.features1}</span>}
                   {count === 2 && <span style={{color: '#f4d956', fontWeight: 600, fontSize: '26px'}}>{props.data?.features2}</span>}
                   {/* {count === 3 && <span style={{color: '#f4d956', fontWeight: 600}}>{props.data?.features3}</span>}

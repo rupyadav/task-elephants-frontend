@@ -8,7 +8,7 @@ html {
   font-weight: 400;
   width: 100% !important;
   /* height: 100% !important; */
-  background-color: rgb(35, 35, 35) !important;
+  background-color: white;
 }
 
 body {
@@ -102,7 +102,7 @@ hr {
 } */
 
 #menu.navbar-default {
-  background-color: rgb(29, 29, 27);
+  background-color: #FF5733;
   /* background-color: #e3ded9; */
   color: #fff;
   border-color: rgba(231, 231, 231, 0);
@@ -120,7 +120,7 @@ hr {
   text-transform: uppercase;
   color: #fff;
   font-size: 15px;
-  font-weight: 400;
+  font-weight: bold;
   padding: 8px 2px;
   border-radius: 0;
   margin: 9px 20px 0;
@@ -155,7 +155,7 @@ hr {
   width: 100% !important;
   height: 2px !important;
   /* background: #f4d956; */
-  background: #5d5650;
+  background: #ffff;
   content: "" !important;
   transition: width 0.2s !important;
 }
@@ -320,18 +320,18 @@ header .intro-text {
 #about h3 {
   font-size: 22px;
   margin: 0 0 20px;
-  color: rgb(130, 130, 130);
+  color: #000;
 }
 #about h2 {
   position: relative;
   margin-bottom: 15px;
   padding-bottom: 15px;
   text-align: center;
-  color: #fff;
+  color: #FF5733;
 }
 #about h4 {
   text-align: center;
-  color: rgb(130, 130, 130);
+  color: rgb(30, 29, 29);
 }
 #about h2::after {
   position: absolute;
@@ -380,6 +380,7 @@ header .intro-text {
   margin: 30px 0;
   font-size: 18px;
   font-weight: 400;
+  color: #000;
 }
 .container4 {
   display: flex;
@@ -406,16 +407,24 @@ header .intro-text {
   border: 1px;
 }
 .card-1{
-  background: rgb(104, 140, 232);
+  background: #5c1c9a;
+  border: 1px solid #fff;
+  box-shadow: 8px 7px 0px #d08a12;
 }
 .card-2{
-  background:  rgb(87, 125, 221);
+  background:  #5c1c9a;
+  border: 1px solid #fff;
+  box-shadow: 8px 7px 0px #d08a12;
 }
 .card-3{
-  background: rgb(80, 116, 205);
+  background: #5c1c9a;
+  border: 1px solid #fff;
+  box-shadow: 8px 7px 0px #d08a12;
 }
 .card-4{
-  background:  rgb(70, 106, 185);
+  background:  #5c1c9a;
+  border: 1px solid #fff;
+  box-shadow: 8px 7px 0px #d08a12;
 }
 .card:hover{
   /* color: #fff; */
@@ -439,7 +448,7 @@ header .intro-text {
 #services {
   padding: 100px 0;
   /* background: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9)); */
-  background: rgb(35, 35, 35);
+  background: #FF5733;
   color: #fff;
 }
 #services .service-desc {
@@ -481,11 +490,11 @@ header .intro-text {
 #services h3 {
   font-weight: 500;
   padding: 5px 0;
-  color: rgb(130, 130, 130);
+  color: #fff;
   font-size: 18px;
 }
 #services p {
-  color: rgb(130, 130, 130);
+  color: #fff;
   font-size: 18px;
   font-weight: 400;
   line-height: 24px;
@@ -496,7 +505,8 @@ header .intro-text {
 #services .service-desc h3 {
   font-weight: 500;
   padding: 5px 0;
-  color: #f4d956;
+  color: #fff;
+  font-weight: bold;
   font-size: 16px;
 }
 /* Dos and Donts Section */
@@ -507,7 +517,7 @@ header .intro-text {
   padding: 50px 0;
 }
 #dosdonts h2{
-  color: #fff;
+  color: #FF5733;
 }
 #dosdonts .section-title h2::after {
   background: #f4d956;
@@ -530,7 +540,7 @@ header .intro-text {
 }
 #dosdonts .list-style li{
   font-size: 18px;
-  color: rgb(130, 130, 130);
+  color: rgb(28, 27, 27);
 }
 #dosdonts .dos{
   margin: auto;
@@ -554,7 +564,7 @@ header .intro-text {
 #outsource{
   padding: 50px 0;
   /* background: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9)); */
-  background: rgb(35, 35, 35);
+  background: #FF5733;
   color: #fff;
 }
 #outsource h2{
@@ -575,10 +585,10 @@ header .intro-text {
 }
 #outsource .list-style li{
   font-size: 18px;
-  color: rgb(130, 130, 130);
+  color: #fff;
 }
 #outsource p {
-  color: rgb(130, 130, 130);
+  color: #fff;
   font-size: 18px;
   font-weight: 400;
   line-height: 24px;
@@ -677,7 +687,7 @@ header .intro-text {
   align-items: center;
   text-align: center;
   border: 1px;
-  background-color: #000;
+  background-color: #FF5733;
 }
 .caption:hover{
   /* background-color: #608dfd; */
@@ -688,7 +698,7 @@ header .intro-text {
 #contact {
   padding: 100px 0;
   /* background: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9)); */
-  background: rgb(35, 35, 35);
+  background: #fff;
   color: #fff;
 }
 #contact .section-title {
@@ -699,7 +709,7 @@ header .intro-text {
   line-height: 24px;
 }
 #contact h2 {
-  color: #fff;
+  color: #FF5733;
   margin-top: 10px;
   margin-bottom: 15px;
   padding-bottom: 15px;
@@ -714,14 +724,14 @@ header .intro-text {
   left: 30px;
 }
 #contact h3 {
-  color: rgb(130, 130, 130);
+  color: #FF5733;
   margin-top: 80px;
   margin-bottom: 25px;
   padding-bottom: 20px;
   font-weight: 400;
 }
 #contact p {
-  color: rgb(130, 130, 130);
+  color: #000;
   font-size: 18px;
   font-weight: 400;
   line-height: 24px;
@@ -736,11 +746,13 @@ header .intro-text {
 #contact .btn-custom {
   margin: 30px 0;
   background: transparent;
-  border: 2px solid #fff;
+  color: #FF5733;
 }
 #contact .btn-custom:hover {
-  color: #1f386e;
-  background: #fff;
+  color: #fff;
+  background: #FF5733;
+  border: 2px solid #fff;
+  font-weight: bold;
 }
 label {
   font-size: 12px;
@@ -788,7 +800,7 @@ label {
   margin: 20px 0;
 }
 #contact .contact-item span {
-  color: rgba(255, 255, 255, 1);
+  color: #FF5733;
   margin-bottom: 10px;
   display: block;
 }
@@ -811,7 +823,7 @@ label {
   height: 48px;
   padding: 12px 0;
   border: 2px solid #fff;
-  color: #fff;
+  color: #FF5733;
   border-radius: 50%;
   transition: all 0.3s;
 }
@@ -821,11 +833,11 @@ label {
 }
 /* Footer Section*/
 #footer {
-  background: rgb(35, 35, 35);
+  background: #FF5733;
   padding: 10px 0;
 }
 #footer p {
-  color: #888;
+  color: #fff;
   font-size: 14px;
 }
 #footer a {
