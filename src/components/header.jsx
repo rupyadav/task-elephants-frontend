@@ -27,8 +27,8 @@ export const Header = (props) => {
                 <br></br>
                 <br></br>
                 <p style={{ fontFamily: 'Barlow Semibold'}}>
-                  {count === 1 && <span style={{color: '#f4d956', fontWeight: 600, fontSize: '26px'}}>{props.data?.features1}</span>}
-                  {count === 2 && <span style={{color: '#f4d956', fontWeight: 600, fontSize: '26px'}}>{props.data?.features2}</span>}
+                  {count === 1 && <span style={{color: '#EC9418', fontWeight: 'Bold', fontSize: '26px'}}>{props.data?.features1}</span>}
+                  {count === 2 && <span style={{color: '#EC9418', fontWeight: 'Bold', fontSize: '26px'}}>{props.data?.features2}</span>}
                   {/* {count === 3 && <span style={{color: '#f4d956', fontWeight: 600}}>{props.data?.features3}</span>}
                   {count === 4 && <span style={{color: '#f4d956', fontWeight: 600}}>{props.data?.features4}</span>} */}
                  {props.data ? props.data.paragraph : "Loading"}</p>

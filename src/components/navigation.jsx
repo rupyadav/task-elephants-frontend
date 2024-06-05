@@ -31,6 +31,7 @@ export const Navigation = (props) => {
             </button>
             <a className="navbar-brand page-scroll" href="#page-top">
             <img src="img/ICON.svg" alt="logo" className="responsive-logo" />
+            <div className="brand-text">Task Elepahnts</div>
             </a>{" "}
           </div>
 

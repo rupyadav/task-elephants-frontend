@@ -115,6 +115,20 @@ hr {
   color: #fff;
   text-transform: uppercase;
 }
+
+.brand-text {
+  display: none;
+}
+@media (min-width: 768px) {
+  .brand-text {
+    display: block;
+    font-size: medium;
+    margin-top: -10px;
+    margin-left: -20px;
+    color: #000;
+  }
+}
+
 #menu.navbar-default .navbar-nav > li > a {
   font-family: "Lato", sans-serif;
   text-transform: uppercase;
@@ -263,7 +277,7 @@ a:focus,
 }
 .intro .overlay {
   /* background:  rgb(130, 130, 130); */
-  background: linear-gradient(to right, rgba(45, 45, 45, 0.4), rgba(28, 28, 28, 0.4));
+  background: linear-gradient(to right, rgb(255 255 255 / 40%), rgb(0 0 0 / 40%));
 }
 .intro h1 {
   font-family: "Raleway", sans-serif;
@@ -384,7 +398,7 @@ header .intro-text {
 }
 .container4 {
   display: flex;
-  /* justify-content: space-between; */
+  gap: 25px;
   padding-top: 20px;
   
 }
@@ -395,44 +409,25 @@ header .intro-text {
   font-family: 'Nohemi', sans-serif;
   letter-spacing: 3%;
   text-transform: uppercase;
-  color: #fff;
   font-weight: 600;
   font-size: 16px;
   line-height: 24.84px;
-  /* width: 200px; */
   padding: 35px 30px 35px 30px;
-  /* border-radius: 16px; */
   align-items: center;
   text-align: center;
   border: 1px;
 }
 .card-1{
-  background: #5c1c9a;
-  border: 1px solid #fff;
-  box-shadow: 8px 7px 0px #d08a12;
+  box-shadow: 1px 1px 3px 1px #d08a12;
 }
 .card-2{
-  background:  #5c1c9a;
-  border: 1px solid #fff;
-  box-shadow: 8px 7px 0px #d08a12;
+  box-shadow: 1px 1px 3px 1px #d08a12;
 }
 .card-3{
-  background: #5c1c9a;
-  border: 1px solid #fff;
-  box-shadow: 8px 7px 0px #d08a12;
+  box-shadow: 1px 1px 3px 1px #d08a12;
 }
 .card-4{
-  background:  #5c1c9a;
-  border: 1px solid #fff;
-  box-shadow: 8px 7px 0px #d08a12;
-}
-.card:hover{
-  /* color: #fff; */
-  /* background-image: none; */
-  /* background-color: #6372ff; */
-  /* transform: translateY(2px); */
-  /* transition: all; */
-  /* cursor: pointer; */
+  box-shadow: 1px 1px 3px 1px #d08a12;
 }
 
 #about > div > div.row > div:nth-child(3) > div > div > div > img{
@@ -1029,4 +1024,23 @@ label {
     width: 50px; /* Even smaller width on very small screens */
   }
 }
+
+.card {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.card.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.Card{
+	position: relative;
+    height: 300px;
+    border-radius: 20%;
+    color: #227093;
+}
+
 
