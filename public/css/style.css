@@ -101,6 +101,10 @@ hr {
   line-height: 20px;
 } */
 
+.navbar-brand{
+  display: ruby;
+}
+
 #menu.navbar-default {
   background-color: #FF5733;
   /* background-color: #e3ded9; */
@@ -124,8 +128,7 @@ hr {
     display: block;
     font-size: medium;
     margin-top: -10px;
-    margin-left: -20px;
-    color: #000;
+    color: #fff;
   }
 }
 
@@ -196,12 +199,11 @@ hr {
 .section-title h2::after {
   position: absolute;
   content: "";
-  background: linear-gradient(to right, #5ca9fb 0%, #6372ff 100%);
   height: 4px;
-  width: 60px;
+  width: 90px;
   bottom: 0;
   margin-left: -30px;
-  left: 50%;
+  left: 48%;
 }
 .section-title p {
   font-size: 18px;
@@ -280,9 +282,9 @@ a:focus,
   background: linear-gradient(to right, rgb(255 255 255 / 40%), rgb(0 0 0 / 40%));
 }
 .intro h1 {
-  font-family: "Raleway", sans-serif;
+  font-family: 'Raleway';
   color: #fff;
-  font-size: 50px;
+  font-size: 45px;
   font-weight: 700;
   text-transform: uppercase;
   margin-top: 0;
@@ -348,16 +350,18 @@ header .intro-text {
   color: rgb(30, 29, 29);
 }
 #about h2::after {
-  position: absolute;
-  content: "";
-  /* background: linear-gradient(to right, #5ca9fb 0%, #6372ff 100%); */
-  background: #f4d956;
-  height: 4px;
-  width: 60px;
-  bottom: 0;
-  left: 0;
-  margin-left: -30px;
-  left: 50%;
+    position: absolute;
+    content: "";
+    /* background: linear-gradient(to right, #5ca9fb 0%, #6372ff 100%); */
+    /* background: #f4d956; */
+    height: 4px;
+    width: 90px;
+    bottom: 0;
+    left: 0;
+    margin-left: -30px;
+    left: 48%;
+    background-color: #f94327;
+    background-image: linear-gradient(316deg, #f94327 0%, #ff7d14 74%);
 }
 #about .about-text li {
   margin-bottom: 6px;
@@ -456,11 +460,13 @@ header .intro-text {
   position: absolute;
   content: "";
   background: #f4d956;
+  /* background-color: #f94327; */
+  background-image: linear-gradient(316deg, #ffffff 0%, #161311 74%);
   height: 4px;
-  width: 60px;
+  width: 100px;
   bottom: 0;
   margin-left: -30px;
-  left: 50%;
+  left: 48%;
 }
 #services i.fa {
   font-size: 42px;
@@ -515,23 +521,28 @@ header .intro-text {
   color: #FF5733;
 }
 #dosdonts .section-title h2::after {
-  background: #f4d956;
+  background-color: #f94327;
+    background-image: linear-gradient(316deg, #f94327 0%, #ff7d14 74%);
 }
 #dosdonts .list-style li:before {
   content: "\f00c";
-  font-family: "FontAwesome";
-  color: #f4d956;
-  font-size: 18px;
-  font-weight: 300;
-  padding-right: 8px;
+    font-family: "FontAwesome";
+    background-color: #f94327;
+    background-image: linear-gradient(316deg, #f94327 0%, #ff7d14 74%);
+    font-size: 15px;
+    font-weight: 300;
+    padding-right: 0px;
+    margin-right: 8px;
 }
 #dosdonts > div > div > div:nth-child(2) > div > div > ul > li:before {
-  content: "\f00d";
-  font-family: "FontAwesome";
-  color: #f4d956;
-  font-size: 18px;
-  font-weight: 300;
-  padding-right: 8px;
+  content: "\f00c";
+    font-family: "FontAwesome";
+    background-color: #f94327;
+    background-image: linear-gradient(316deg, #f94327 0%, #ff7d14 74%);
+    font-size: 15px;
+    font-weight: 300;
+    padding-right: 0px;
+    margin-right: 8px;
 }
 #dosdonts .list-style li{
   font-size: 18px;
@@ -573,10 +584,11 @@ header .intro-text {
 #outsource .list-style li:before {
   content: "\f024";
   font-family: "FontAwesome";
-  color: #f4d956;
+  background-color: #f94327;
+    background-image: linear-gradient(316deg, #f94327 0%, #ff7d14 74%);
   font-size: 18px;
   font-weight: 300;
-  padding-right: 8px;
+  margin-right: 8px;
 }
 #outsource .list-style li{
   font-size: 18px;
@@ -595,7 +607,8 @@ header .intro-text {
   padding-left: 100px;
 }
 #outsource .section-title h2::after {
-  background: #f4d956;
+  background-color: #f94327;
+  background-image: linear-gradient(316deg, #ffffff 0%, #161311 74%);
 }
 /* Testimonials Section */
 #testimonials {
@@ -712,9 +725,10 @@ header .intro-text {
 #contact .section-title h2::after {
   position: absolute;
   content: "";
-  background: #f4d956;
+  background-color: #f94327;
+    background-image: linear-gradient(316deg, #f94327 0%, #ff7d14 74%);
   height: 4px;
-  width: 60px;
+  width: 100px;
   bottom: 0;
   left: 30px;
 }
@@ -1037,10 +1051,12 @@ label {
 }
 
 .Card{
-	position: relative;
-    height: 300px;
+    position: relative;
+    height: 250px;
     border-radius: 20%;
-    color: #227093;
+    color: fff;
+    background-color: #f94327;
+    background-image: linear-gradient(316deg, #f94327 0%, #ff7d14 74%);
 }
 
 
