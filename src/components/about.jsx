@@ -22,7 +22,7 @@ export const About = (props) => {
               <h4>Among the primary things that people take into account prior to outsourcing their services to a provider is their:</h4>
               <div className="container4">
                 <div ref={card1Ref} className={`card card-1 ${card1InView ? 'animate' : ''}`}>
-                  <img className="thumb" src="img/thumb.png" alt="thumb" /><br/>
+                  <img className="thumb" src="img/thumb.svg" alt="thumb" /><br/>
                   <span>Dependability</span>
                 </div>
                 <div ref={card2Ref} className={`card card-2 ${card2InView ? 'animate' : ''}`}>

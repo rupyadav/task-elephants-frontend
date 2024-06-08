@@ -5,12 +5,22 @@ import { LoginModal } from "./LoginModal";
 
 export const Navigation = (props) => {
   const [show, setShow] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleClose = () => {
     setShow(false);
   };
+
   const handleShow = () => {
     setShow(true);
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
   };
   return (
     <>
@@ -30,8 +40,7 @@ export const Navigation = (props) => {
               <span className="icon-bar"></span>{" "}
             </button>
             <a className="navbar-brand page-scroll" href="#page-top">
-            <img src="img/ICON.svg" alt="logo" className="responsive-logo" />
-            <div className="brand-text">Task Elepahnts</div>
+              <img src="img/ICON.svg" alt="logo" className="responsive-logo" />
             </a>{" "}
           </div>
 
@@ -65,8 +74,27 @@ export const Navigation = (props) => {
                   Contact
                 </a>
               </li>
-              <li>
-                <a onClick={handleShow} className="page-scroll">
+              <li
+                style={{
+                  border: "2px solid",
+                  borderRadius: "50px",
+                  backgroundColor: "#f42b03",
+                  backgroundImage:
+                    "linear-gradient(316deg, #f42b03 0%, #ffbe0b 74%)",
+                  color: "white",
+                  boxShadow: isHovered
+                    ? "0px 4px 8px rgba(0, 0, 0, 0.2)"
+                    : "none",
+                  transition: "box-shadow 0.3s ease",
+                }}
+              >
+                <a
+                  onClick={handleShow}
+                  className="page-scroll"
+                  style={{ color: "white" }}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                >
                   Login
                 </a>
               </li>

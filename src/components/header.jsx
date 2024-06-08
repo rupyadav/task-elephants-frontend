@@ -19,12 +19,7 @@ export const Header = (props) => {
           <div className="container">
             <div className="row">
               <div className="col-md-8 col-md-offset-2 intro-text">
-                <br></br>
-                <h1 style={{ fontFamily: 'Armada Bold'}}>
-                  {props.data ? props.data.title : "Loading"}
-                  <span></span>
-                </h1>
-                <br></br>
+              <div className="brand-text" style={{ fontFamily: 'Armada Bold'}}>Task Elephants</div>
                 <br></br>
                 <p style={{ fontFamily: 'Barlow Semibold'}}>
                   {count === 1 && <span style={{color: '#EC9418', fontWeight: 'Bold', fontSize: '26px'}}>{props.data?.features1}</span>}

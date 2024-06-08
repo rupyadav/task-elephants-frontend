@@ -106,11 +106,11 @@ hr {
 }
 
 #menu.navbar-default {
-  background-color: #FF5733;
+  background-color: #fdfdfd;
   /* background-color: #e3ded9; */
-  color: #fff;
   border-color: rgba(231, 231, 231, 0);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  padding-block: 20px;
 }
 #menu a.navbar-brand {
   font-family: "Raleway", sans-serif;
@@ -118,6 +118,7 @@ hr {
   font-weight: 700;
   color: #fff;
   text-transform: uppercase;
+  margin-top: -15px !important;
 }
 
 .brand-text {
@@ -135,10 +136,10 @@ hr {
 #menu.navbar-default .navbar-nav > li > a {
   font-family: "Lato", sans-serif;
   text-transform: uppercase;
-  color: #fff;
+  color: #000;
   font-size: 15px;
   font-weight: bold;
-  padding: 8px 2px;
+  padding:0px 8px 6px 8px;
   border-radius: 0;
   margin: 9px 20px 0;
 }
@@ -150,7 +151,7 @@ hr {
   width: 0;
   height: 2px;
   /* background: #5d5650; */
-  background: #fff;
+  background: rgb(255, 117, 32);
   content: "";
   transition: width 0.2s;
 }
@@ -281,12 +282,10 @@ a:focus,
   /* background:  rgb(130, 130, 130); */
   background: linear-gradient(to right, rgb(255 255 255 / 40%), rgb(0 0 0 / 40%));
 }
-.intro h1 {
-  font-family: 'Raleway';
+.brand-text {
   color: #fff;
-  font-size: 45px;
+  font-size: 40px;
   font-weight: 700;
-  text-transform: uppercase;
   margin-top: 0;
   margin-bottom: 20px;
 }
@@ -1022,7 +1021,7 @@ label {
 
 
 .responsive-logo {
-  height: auto;
+  height: 80px;
   width: 100px; /* Default width */
   transition: width 0.3s ease-in-out;
 }
@@ -1060,3 +1059,141 @@ label {
 }
 
 
+
+.screen {
+  /* background: linear-gradient(90deg, #5D54A4, #7C78B8); */
+  position: relative;
+  height: 400px;
+  width: 360px;
+  /* background-color: #ffffff; */
+  /* background-image: linear-gradient(315deg, #ffffff 0%, #cea177 74%); */
+  box-shadow: 0px 0px 2px #f29418;
+  background-color: #f06543;
+  background-image: linear-gradient(315deg, #f06543 0%, #ffbe3d 74%);
+}
+.screen__content {
+	z-index: 1;
+	position: relative;	
+	height: 100%;
+}
+
+.screen__background {		
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 0;
+	-webkit-clip-path: inset(0 0 0 0);
+	clip-path: inset(0 0 0 0);	
+}
+
+.screen__background__shape {
+	transform: rotate(45deg);
+	position: absolute;
+}
+
+.screen__background__shape1 {
+	height: 520px;
+	width: 520px;
+	background-color:fff;
+	top: -50px;
+	right: 120px;	
+	border-radius: 0 72px 0 0;
+}
+
+.screen__background__shape2 {
+	height: 220px;
+	width: 220px;
+	background-color: #f06543;
+background-image: linear-gradient(315deg, #f06543 0%, #ffbe3d 74%);
+	top: -172px;
+	right: 0;	
+	border-radius: 32px;
+}
+
+.screen__background__shape3 {
+	height: 540px;
+	width: 190px;
+	background-color: #f06543;
+background-image: linear-gradient(315deg, #f06543 0%, #ffbe3d 74%);
+	top: -24px;
+	right: 0;	
+	border-radius: 32px;
+}
+
+.screen__background__shape4 {
+	height: 400px;
+	width: 200px;
+	background-color: #f06543;
+background-image: linear-gradient(315deg, #f06543 0%, #ffbe3d 74%);
+	top: 420px;
+	right: 50px;	
+	border-radius: 60px;
+}
+
+.login {
+	width: 320px;
+	padding: 30px;
+	padding-top: 100px;
+}
+
+.login__field {
+	padding: 20px 0px;	
+	position: relative;	
+}
+
+.login__icon {
+	position: absolute;
+	top: 30px;
+	color: #7875B5;
+}
+
+.login__input {
+	border: none;
+	border-bottom: 2px solid #D1D1D4;
+	background: none;
+	padding: 10px;
+	padding-left: 24px;
+	font-weight: 700;
+	width: 75%;
+	transition: .2s;
+}
+
+.login__input:active,
+.login__input:focus,
+.login__input:hover {
+	outline: none;
+	border-bottom-color: #6A679E;
+}
+
+.login__submit {
+	background: #fff;
+	font-size: 14px;
+	margin-top: 30px;
+	padding: 16px 20px;
+	border-radius: 26px;
+	border: 1px solid #D4D3E8;
+	text-transform: uppercase;
+	font-weight: 700;
+	display: flex;
+	align-items: center;
+	width: 100%;
+	color: #4C489D;
+	box-shadow: 0px 2px 2px #5C5696;
+	cursor: pointer;
+	transition: .2s;
+}
+
+.login__submit:active,
+.login__submit:focus,
+.login__submit:hover {
+	border-color: #6A679E;
+	outline: none;
+}
+
+.button__icon {
+	font-size: 24px;
+	margin-left: auto;
+	color: #7875B5;
+}
