@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from 'react';
+import { Button } from "react-bootstrap";
 import LoginDialog from "./LoginDialog";
 import { LoginModal } from "./LoginModal";
 
@@ -74,21 +75,22 @@ export const Navigation = (props) => {
                   Contact
                 </a>
               </li>
-              <li
+              <li>
+                <Button 
+                onClick={handleShow}
+                variant="primary"
                 style={{
                   border: "2px solid",
                   borderRadius: "50px",
-                  backgroundColor: "#f42b03",
+                  backgroundColor: "#99201c",
                   backgroundImage:
-                    "linear-gradient(316deg, #f42b03 0%, #ffbe0b 74%)",
+                    "linear-gradient(316deg, #99201c 0%, #f56545 74%)",
                   color: "white",
-                  boxShadow: isHovered
-                    ? "0px 4px 8px rgba(0, 0, 0, 0.2)"
-                    : "none",
-                  transition: "box-shadow 0.3s ease",
-                }}
-              >
-                <a
+                  width: '100px',
+                  fontSize: '16px',
+                  paddingBottom: '10px'
+                }}>Login</Button>
+                {/* <a
                   onClick={handleShow}
                   className="page-scroll"
                   style={{ color: "white" }}
@@ -96,7 +98,7 @@ export const Navigation = (props) => {
                   onMouseLeave={handleMouseLeave}
                 >
                   Login
-                </a>
+                </a> */}
               </li>
             </ul>
             {/* {show && <LoginModal show={show} handleClose={handleClose} />} */}

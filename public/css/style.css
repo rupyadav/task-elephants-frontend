@@ -421,16 +421,19 @@ header .intro-text {
   border: 1px;
 }
 .card-1{
-  box-shadow: 1px 1px 3px 1px #d08a12;
+  box-shadow: 10px 10px #D3D3D3;
+  /* background-color: #ffffff;
+background-image: linear-gradient(315deg, #ffffff 0%, #ff7878 74%); */
+
 }
 .card-2{
-  box-shadow: 1px 1px 3px 1px #d08a12;
+  box-shadow: 10px 10px #D3D3D3;
 }
 .card-3{
-  box-shadow: 1px 1px 3px 1px #d08a12;
+  box-shadow: 10px 10px #D3D3D3;
 }
 .card-4{
-  box-shadow: 1px 1px 3px 1px #d08a12;
+  box-shadow: 10px 10px #D3D3D3;
 }
 
 #about > div > div.row > div:nth-child(3) > div > div > div > img{
@@ -446,21 +449,25 @@ header .intro-text {
 #services {
   padding: 100px 0;
   /* background: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9)); */
-  background: #FF5733;
-  color: #fff;
+  background: #fff;
+  color: #000;
 }
 #services .service-desc {
-  margin: 10px 10px 20px;
+  margin: 30px 10px 20px;
 }
 #services h2 {
-  color: #fff;
+  color: #FF5733;
+}
+#services h3 {
+  font-size: 22px;
+  margin: 0 0 20px;
+  color: #000;
 }
 #services .section-title h2::after {
   position: absolute;
   content: "";
-  background: #f4d956;
-  /* background-color: #f94327; */
-  background-image: linear-gradient(316deg, #ffffff 0%, #161311 74%);
+  background-color: #f94327;
+  background-image: linear-gradient(316deg, #f94327 0%, #ff7d14 74%);
   height: 4px;
   width: 100px;
   bottom: 0;
@@ -474,27 +481,21 @@ header .intro-text {
   padding: 40px 0;
   background: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9));
   border-radius: 50%;
-  color: #fff;
+  color: #000;
   box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.05);
 }
 #services > div > div.row > div > img{
-  background-color: #fff;
-  height: 150px;
-  width: 150px;
+  background-color: #000;
+  height: 125px;
+  width: 125px;
 }
 #services > div > div.row > div > img:hover{
-  background-color: #fff;
+  background-color: #000;
   height: 160px;
   width: 160px;
 }
-#services h3 {
-  font-weight: 500;
-  padding: 5px 0;
-  color: #fff;
-  font-size: 18px;
-}
 #services p {
-  color: #fff;
+  color: #000;
   font-size: 18px;
   font-weight: 400;
   line-height: 24px;
@@ -505,7 +506,7 @@ header .intro-text {
 #services .service-desc h3 {
   font-weight: 500;
   padding: 5px 0;
-  color: #fff;
+  color: #FF5733;
   font-weight: bold;
   font-size: 16px;
 }
@@ -514,35 +515,28 @@ header .intro-text {
   margin-bottom: 20px;
 }
 #dosdonts {
-  padding: 50px 0;
+  padding: 10px 0;
 }
 #dosdonts h2{
   color: #FF5733;
 }
 #dosdonts .section-title h2::after {
-  background-color: #f94327;
-    background-image: linear-gradient(316deg, #f94327 0%, #ff7d14 74%);
+  background-color: #99201c;
+  background-image: linear-gradient(316deg, #99201c 0%, #f56545 74%);
 }
-#dosdonts .list-style li:before {
+/* #dosdonts .list-style li:before {
   content: "\f00c";
-    font-family: "FontAwesome";
-    background-color: #f94327;
-    background-image: linear-gradient(316deg, #f94327 0%, #ff7d14 74%);
-    font-size: 15px;
-    font-weight: 300;
-    padding-right: 0px;
-    margin-right: 8px;
-}
-#dosdonts > div > div > div:nth-child(2) > div > div > ul > li:before {
-  content: "\f00c";
-    font-family: "FontAwesome";
-    background-color: #f94327;
-    background-image: linear-gradient(316deg, #f94327 0%, #ff7d14 74%);
-    font-size: 15px;
-    font-weight: 300;
-    padding-right: 0px;
-    margin-right: 8px;
-}
+  font-family: "FontAwesome";
+  color: #28a745; 
+  font-size: 15px;
+  font-weight: 300;
+  padding-right: 0px;
+  margin-right: 8px;
+} */
+
+
+
+
 #dosdonts .list-style li{
   font-size: 18px;
   color: rgb(28, 27, 27);
@@ -569,32 +563,31 @@ header .intro-text {
 #outsource{
   padding: 50px 0;
   /* background: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9)); */
-  background: #FF5733;
-  color: #fff;
+  background: #fff;
+  color: #000;
 }
 #outsource h2{
-  color: #fff;
+  color: #FF5733;
 }
 #outsource h3 {
   font-weight: 500;
   padding: 5px 0;
-  color: rgb(130, 130, 130);
+  color: #000;
 }
 #outsource .list-style li:before {
   content: "\f024";
   font-family: "FontAwesome";
-  background-color: #f94327;
-    background-image: linear-gradient(316deg, #f94327 0%, #ff7d14 74%);
+  color: #FF5733;
   font-size: 18px;
   font-weight: 300;
   margin-right: 8px;
 }
 #outsource .list-style li{
   font-size: 18px;
-  color: #fff;
+  color: #000;
 }
 #outsource p {
-  color: #fff;
+  color: #000;
   font-size: 18px;
   font-weight: 400;
   line-height: 24px;
@@ -606,8 +599,8 @@ header .intro-text {
   padding-left: 100px;
 }
 #outsource .section-title h2::after {
-  background-color: #f94327;
-  background-image: linear-gradient(316deg, #ffffff 0%, #161311 74%);
+  background-color: #99201c;
+  background-image: linear-gradient(316deg, #99201c 0%, #f56545 74%);
 }
 /* Testimonials Section */
 #testimonials {
@@ -724,8 +717,8 @@ header .intro-text {
 #contact .section-title h2::after {
   position: absolute;
   content: "";
-  background-color: #f94327;
-    background-image: linear-gradient(316deg, #f94327 0%, #ff7d14 74%);
+  background-color: #99201c;
+  background-image: linear-gradient(316deg, #99201c 0%, #f56545 74%);
   height: 4px;
   width: 100px;
   bottom: 0;
@@ -841,7 +834,8 @@ label {
 }
 /* Footer Section*/
 #footer {
-  background: #FF5733;
+  background-color: #99201c;
+  background-image: linear-gradient(316deg, #99201c 0%, #f56545 74%);
   padding: 10px 0;
 }
 #footer p {
@@ -1053,9 +1047,11 @@ label {
     position: relative;
     height: 250px;
     border-radius: 20%;
-    color: fff;
-    background-color: #f94327;
-    background-image: linear-gradient(316deg, #f94327 0%, #ff7d14 74%);
+    color: #fff;
+    background-color: #99201c;
+    background-image: linear-gradient(316deg, #99201c 0%, #f56545 74%);
+    /* background-color: #f94327;
+    background-image: linear-gradient(316deg, #f94327 0%, #ff7d14 74%); */
 }
 
 

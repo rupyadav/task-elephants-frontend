@@ -223,7 +223,21 @@ function LoginDialog({ show, handleClose }) {
                   />
                 </div>
                 <DialogActions style={{ justifyContent: "center" }}>
-                  <Button
+                <Button 
+                onClick={handleLogin}
+                variant="primary"
+                style={{
+                  border: "2px solid",
+                  borderRadius: "50px",
+                  backgroundColor: "#99201c",
+                  backgroundImage:
+                    "linear-gradient(316deg, #99201c 0%, #f56545 74%)",
+                  color: "white",
+                  width: '100px',
+                  fontSize: '16px',
+                  paddingBottom: '5px'
+                }}>Login</Button>
+                  {/* <Button
                     onClick={handleLogin}
                     color="primary"
                     variant="contained"
@@ -239,7 +253,7 @@ function LoginDialog({ show, handleClose }) {
                     }}
                   >
                     Login
-                  </Button>
+                  </Button> */}
                 </DialogActions>
                 {/* <button className="button login__submit" onClick={handleLogin}>
               <span className="button__text" >Login</span>
