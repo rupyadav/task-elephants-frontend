@@ -959,9 +959,8 @@ label {
   align-items: center;
 }
 .card{
-  padding: 16px;
+  padding: 0px 20px 40px 20px;
         width: 80%;
-        /* height: 80%; */
         margin: 20px;
 }
 #menu.navbar-default .navbar-nav > li > a{
@@ -997,6 +996,9 @@ label {
 
 .intro{
 height: 50%;
+}
+.btn{
+  margin-left: 20px;
 }
 }
 
