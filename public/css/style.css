@@ -8,7 +8,7 @@ html {
   font-weight: 400;
   width: 100% !important;
   /* height: 100% !important; */
-  background-color: white;
+  background-color: #f5f5f5;
 }
 
 body {
@@ -106,7 +106,7 @@ hr {
 }
 
 #menu.navbar-default {
-  background-color: #fdfdfd;
+  background-color: #f5f5f5;
   /* background-color: #e3ded9; */
   border-color: rgba(231, 231, 231, 0);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
@@ -116,14 +116,14 @@ hr {
   font-family: "Raleway", sans-serif;
   font-size: 24px;
   font-weight: 700;
-  color: #fff;
+  color: #f5f5f5;
   text-transform: uppercase;
   margin-top: -15px !important;
 }
 
-.brand-text {
+/* .brand-text {
   display: none;
-}
+} */
 @media (min-width: 768px) {
   .brand-text {
     display: block;
@@ -237,7 +237,7 @@ hr {
   font-weight: 500;
   border-radius: 25px;
   transition: all 0.5s linear;
-  border: 1px solid #f4d956;
+  border: 1px solid #FF5733;
 }
 .modal-btn-custom:hover,
 .btn-custom:hover,
@@ -270,9 +270,9 @@ a:focus,
 .intro {
   display: table;
   width: 100%;
-  height: 75%;
-  padding: 0;
-  background: url(../img/tech-daily.jpg) center center no-repeat;
+  height: 100%;
+  padding-top: 30%;
+  background: url(../img/hero-bg1.webp) center center no-repeat;
   background-color: #e5e5e5;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -281,7 +281,7 @@ a:focus,
 }
 .intro .overlay {
   /* background:  rgb(130, 130, 130); */
-  background: linear-gradient(to right, rgb(255 255 255 / 40%), rgb(0 0 0 / 40%));
+  /* background: linear-gradient(to right, rgb(255 255 255 / 40%), rgb(0 0 0 / 40%)); */
   height: 100%;
 }
 .brand-text {
@@ -311,7 +311,7 @@ header .intro-text {
 }
 /* Features Section */
 #features {
-  background: #f6f6f6;
+  background: #f5f5f5;
   /* background: linear-gradient(to right, #6372ff 0%, #5ca9fb 100%); */
 }
 #features h2{
@@ -353,16 +353,14 @@ header .intro-text {
 #about h2::after {
     position: absolute;
     content: "";
-    /* background: linear-gradient(to right, #5ca9fb 0%, #6372ff 100%); */
-    /* background: #f4d956; */
+    background-color: #99201c;
+    background-image: linear-gradient(316deg, #99201c 0%, #f56545 74%);
     height: 4px;
     width: 90px;
     bottom: 0;
     left: 0;
     margin-left: -30px;
     left: 48%;
-    background-color: #f94327;
-    background-image: linear-gradient(316deg, #f94327 0%, #ff7d14 74%);
 }
 #about .about-text li {
   margin-bottom: 6px;
@@ -451,7 +449,7 @@ background-image: linear-gradient(315deg, #ffffff 0%, #ff7878 74%); */
 #services {
   padding: 100px 0;
   /* background: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9)); */
-  background: #fff;
+  background: #f5f5f5;
   color: #000;
 }
 #services .service-desc {
@@ -468,8 +466,8 @@ background-image: linear-gradient(315deg, #ffffff 0%, #ff7878 74%); */
 #services .section-title h2::after {
   position: absolute;
   content: "";
-  background-color: #f94327;
-  background-image: linear-gradient(316deg, #f94327 0%, #ff7d14 74%);
+  background-color: #99201c;
+  background-image: linear-gradient(316deg, #99201c 0%, #f56545 74%);
   height: 4px;
   width: 100px;
   bottom: 0;
@@ -565,7 +563,7 @@ background-image: linear-gradient(315deg, #ffffff 0%, #ff7878 74%); */
 #outsource{
   padding: 50px 0;
   /* background: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9)); */
-  background: #fff;
+  background: #f5f5f5;
   color: #000;
 }
 #outsource h2{
@@ -700,7 +698,7 @@ background-image: linear-gradient(315deg, #ffffff 0%, #ff7878 74%); */
 #contact {
   padding: 100px 0;
   /* background: linear-gradient(to right, rgba(106, 17, 203, 0.9), rgba(37, 117, 252, 0.9)); */
-  background: #fff;
+  background: #f5f5f5;
   color: #fff;
 }
 #contact .section-title {
@@ -961,6 +959,7 @@ label {
 .card{
   padding: 0px 20px 40px 20px;
         width: 80%;
+        /* height: 80%; */
         margin: 20px;
 }
 #menu.navbar-default .navbar-nav > li > a{
@@ -1023,6 +1022,9 @@ height: 50%;
 }
 .margin-bottom-30{
   margin-bottom: 30px;
+}
+.intro {
+  padding-top: 80%;
 }
 }
 
