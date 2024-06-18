@@ -270,6 +270,7 @@ a:focus,
 .intro {
   display: table;
   width: 100%;
+  height: 75%;
   padding: 0;
   background: url(../img/tech-daily.jpg) center center no-repeat;
   background-color: #e5e5e5;
@@ -281,6 +282,7 @@ a:focus,
 .intro .overlay {
   /* background:  rgb(130, 130, 130); */
   background: linear-gradient(to right, rgb(255 255 255 / 40%), rgb(0 0 0 / 40%));
+  height: 100%;
 }
 .brand-text {
   color: #fff;
@@ -958,7 +960,12 @@ label {
 }
 .card{
   padding: 16px;
-  width: 100%;
+        width: 80%;
+        /* height: 80%; */
+        margin: 20px;
+}
+#menu.navbar-default .navbar-nav > li > a{
+  margin-bottom: 10px;
 }
 #dosdonts .dos{
   width: 100%;
@@ -986,6 +993,10 @@ label {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.intro{
+height: 50%;
 }
 }
 
