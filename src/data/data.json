@@ -66,17 +66,17 @@
   ],
   "Services": [
     {
-      "url": "img/bank-r.png",
+      "url": "img/bank-recon.webp",
       "name": "BANK RECONCILIATION",
       "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at."
     },
     {
-      "url": "img/book-keeping.png",
+      "url": "img/book-keep.webp",
       "name": "BOOK KEEPING",
       "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at."
     },
     {
-      "url": "img/payroll-services.png",
+      "url": "img/payroll-services.webp",
       "name": "PAYROLL SERVICES",
       "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam sedasd commodo nibh ante facilisis bibendum dolor feugiat at."
     }

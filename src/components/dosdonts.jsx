@@ -23,7 +23,7 @@ export const DosDonts = (props) => {
                     <CheckCircleIcon style={{ color: '#28a745' }} />
                   </ListItemIcon>
                   <ListItemText primary={doItem} primaryTypographyProps={{ 
-                      fontSize: '15px', // Increased font size
+                      fontSize: '17px', // Increased font size
                       fontWeight : 300
                     }} />
                 </ListItem>
@@ -43,7 +43,7 @@ export const DosDonts = (props) => {
                     <CancelIcon style={{ color: '#dc3545' }} />
                   </ListItemIcon>
                   <ListItemText primary={dontsItem} primaryTypographyProps={{ 
-                      fontSize: '15px', // Increased font size
+                      fontSize: '17px', // Increased font size
                       fontWeight : 300
                     }} />
                 </ListItem>

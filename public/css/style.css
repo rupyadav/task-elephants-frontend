@@ -486,13 +486,15 @@ background-image: linear-gradient(315deg, #ffffff 0%, #ff7878 74%); */
 }
 #services > div > div.row > div > img{
   background-color: #000;
-  height: 125px;
-  width: 125px;
+  height: 40%;
+  width: 70%;
+  border-radius: 40px;
+  box-shadow: 10px 10px #D3D3D3;
 }
 #services > div > div.row > div > img:hover{
   background-color: #000;
-  height: 160px;
-  width: 160px;
+  height: 45%;
+  width: 75%;
 }
 #services p {
   color: #000;
@@ -506,9 +508,9 @@ background-image: linear-gradient(315deg, #ffffff 0%, #ff7878 74%); */
 #services .service-desc h3 {
   font-weight: 500;
   padding: 5px 0;
-  color: #FF5733;
+  color: #000;
   font-weight: bold;
-  font-size: 16px;
+  font-size: 17px;
 }
 /* Dos and Donts Section */
 #dosdonts .section-title {
@@ -1063,10 +1065,9 @@ height: 50%;
     height: 250px;
     border-radius: 20%;
     color: #fff;
+    /* background-color: #f28500; */
     background-color: #99201c;
     background-image: linear-gradient(316deg, #99201c 0%, #f56545 74%);
-    /* background-color: #f94327;
-    background-image: linear-gradient(316deg, #f94327 0%, #ff7d14 74%); */
 }
 
 
