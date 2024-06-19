@@ -1,12 +1,11 @@
-import React from "react";
-import { useState } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "react-bootstrap";
 import LoginDialog from "./LoginDialog";
-import { LoginModal } from "./LoginModal";
 
-export const Navigation = (props) => {
+export const Navigation = () => {
   const [show, setShow] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
 
   const handleClose = () => {
     setShow(false);
@@ -23,6 +22,34 @@ export const Navigation = (props) => {
   const handleMouseLeave = () => {
     setIsHovered(false);
   };
+
+  const observer = useRef();
+
+  useEffect(() => {
+    const sections = document.querySelectorAll("section");
+    const options = {
+      threshold: 0.7,
+    };
+
+    observer.current = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    }, options);
+
+    sections.forEach((section) => {
+      observer.current.observe(section);
+    });
+
+    return () => {
+      if (observer.current) {
+        observer.current.disconnect();
+      }
+    };
+  }, []);
+
   return (
     <>
       <nav id="menu" className="navbar navbar-default navbar-fixed-top">
@@ -50,59 +77,48 @@ export const Navigation = (props) => {
             id="bs-example-navbar-collapse-1"
           >
             <ul className="nav navbar-nav navbar-right">
-              <li>
-                <a href="#" className="page-scroll">
+              <li className={activeSection === "home" ? "active" : ""}>
+                <a href="#home" className="page-scroll">
                   Home
                 </a>
               </li>
-              <li>
+              <li className={activeSection === "about" ? "active" : ""}>
                 <a href="#about" className="page-scroll">
                   About Us
                 </a>
               </li>
-              <li>
+              <li className={activeSection === "services" ? "active" : ""}>
                 <a href="#services" className="page-scroll">
                   Services
                 </a>
               </li>
-              {/* <li>
-                <a href="#team" className="page-scroll">
-                  Team
-                </a>
-              </li> */}
-              <li>
+              <li className={activeSection === "contact" ? "active" : ""}>
                 <a href="#contact" className="page-scroll">
                   Contact
                 </a>
               </li>
               <li>
-                <Button 
-                onClick={handleShow}
-                variant="primary"
-                style={{
-                  border: "2px solid",
-                  borderRadius: "50px",
-                  backgroundColor: "#99201c",
-                  backgroundImage:
-                    "linear-gradient(316deg, #99201c 0%, #f56545 74%)",
-                  color: "white",
-                  width: '100px',
-                  fontSize: '16px',
-                  paddingBottom: '10px'
-                }}>Login</Button>
-                {/* <a
+                <Button
                   onClick={handleShow}
-                  className="page-scroll"
-                  style={{ color: "white" }}
+                  variant="primary"
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
+                  style={{
+                    border: "2px solid",
+                    borderRadius: "50px",
+                    backgroundColor: isHovered ? "#f56545" : "#99201c",
+                    backgroundImage:
+                      "linear-gradient(316deg, #99201c 0%, #f56545 74%)",
+                    color: "white",
+                    width: '100px',
+                    fontSize: '16px',
+                    paddingBottom: '10px'
+                  }}
                 >
                   Login
-                </a> */}
+                </Button>
               </li>
             </ul>
-            {/* {show && <LoginModal show={show} handleClose={handleClose} />} */}
-            {/* {show && <Login show={show} handleClose={handleClose} />} */}
             {show && <LoginDialog show={show} handleClose={handleClose} />}
           </div>
         </div>
