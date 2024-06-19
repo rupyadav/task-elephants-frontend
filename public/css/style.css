@@ -486,15 +486,16 @@ background-image: linear-gradient(315deg, #ffffff 0%, #ff7878 74%); */
 }
 #services > div > div.row > div > img{
   background-color: #000;
-  height: 40%;
-  width: 70%;
+  height: 30%;
+  width: 50%;
   border-radius: 40px;
   box-shadow: 10px 10px #D3D3D3;
 }
+
 #services > div > div.row > div > img:hover{
   background-color: #000;
-  height: 45%;
-  width: 75%;
+  height: 32%;
+  width: 52%;
 }
 #services p {
   color: #000;
