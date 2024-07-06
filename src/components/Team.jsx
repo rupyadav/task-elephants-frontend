@@ -3,15 +3,26 @@ import React from "react";
 export const Team = (props) => {
   return (
     <div id="team" className="text-center">
-      <div className="container">
-        <div className="col-md-8 col-md-offset-2 section-title">
+      <section className="our-team">
+        <div>
           <h2>Meet the Team</h2>
-          {/* <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit duis sed
-            dapibus leonec.
-          </p> */}
+          <p>
+            Our full-time dedicated team in India comprises of over 20 dedicated
+            experienced and certified staff. We have Associates, Seniors,
+            Managers and Partners to handle your accounting needs. Tenure and
+            experience ranges from 2 years to 18 years, which gives us the
+            ability to provide you with just the right level of skills and
+            experience
+          </p>
+          <div className="team-img-div">
+          <img src="../img/team.jpeg" className="team-img" />
+          </div>
         </div>
-        <div id="row">
+      </section>
+      {/* <div className="container">
+        
+        </div> */}
+        {/* <div id="row">
           {props.data
             ? props.data.map((d, i) => (
                 <div key={`${d.name}-${i}`} className="col-md-3 col-sm-6 team">
@@ -27,7 +38,7 @@ export const Team = (props) => {
               ))
             : "loading"}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

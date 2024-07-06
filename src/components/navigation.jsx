@@ -5,7 +5,7 @@ import LoginDialog from "./LoginDialog";
 export const Navigation = () => {
   const [show, setShow] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const [activeSection, setActiveSection] = useState("home");
+  // const [activeSection, setActiveSection] = useState("home");
 
   const handleClose = () => {
     setShow(false);
@@ -25,30 +25,30 @@ export const Navigation = () => {
 
   const observer = useRef();
 
-  useEffect(() => {
-    const sections = document.querySelectorAll("section");
-    const options = {
-      threshold: 0.7,
-    };
+  // useEffect(() => {
+  //   const sections = document.querySelectorAll("section");
+  //   const options = {
+  //     threshold: 0.7,
+  //   };
 
-    observer.current = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
-        }
-      });
-    }, options);
+  //   observer.current = new IntersectionObserver((entries) => {
+  //     entries.forEach((entry) => {
+  //       if (entry.isIntersecting) {
+  //         setActiveSection(entry.target.id);
+  //       }
+  //     });
+  //   }, options);
 
-    sections.forEach((section) => {
-      observer.current.observe(section);
-    });
+  //   sections.forEach((section) => {
+  //     observer.current.observe(section);
+  //   });
 
-    return () => {
-      if (observer.current) {
-        observer.current.disconnect();
-      }
-    };
-  }, []);
+  //   return () => {
+  //     if (observer.current) {
+  //       observer.current.disconnect();
+  //     }
+  //   };
+  // }, []);
 
   return (
     <>
@@ -67,7 +67,7 @@ export const Navigation = () => {
               <span className="icon-bar"></span>{" "}
               <span className="icon-bar"></span>{" "}
             </button>
-            <a className="navbar-brand page-scroll" href="#page-top">
+            <a className="navbar-brand page-scroll" href="#home">
               <img src="img/ICON.svg" alt="logo" className="responsive-logo" />
             </a>{" "}
           </div>
@@ -77,22 +77,27 @@ export const Navigation = () => {
             id="bs-example-navbar-collapse-1"
           >
             <ul className="nav navbar-nav navbar-right">
-              <li className={activeSection === "home" ? "active" : ""}>
+              <li>
                 <a href="#home" className="page-scroll">
                   Home
                 </a>
               </li>
-              <li className={activeSection === "about" ? "active" : ""}>
+              <li>
                 <a href="#about" className="page-scroll">
                   About Us
                 </a>
               </li>
-              <li className={activeSection === "services" ? "active" : ""}>
+              <li>
+                <a href="#team" className="page-scroll">
+                  Our Team
+                </a>
+              </li>
+              {/* <li className={activeSection === "services" ? "active" : ""}>
                 <a href="#services" className="page-scroll">
                   Services
                 </a>
-              </li>
-              <li className={activeSection === "contact" ? "active" : ""}>
+              </li> */}
+              <li>
                 <a href="#contact" className="page-scroll">
                   Contact
                 </a>
@@ -106,9 +111,7 @@ export const Navigation = () => {
                   style={{
                     border: "2px solid",
                     borderRadius: "50px",
-                    backgroundColor: isHovered ? "#f56545" : "#99201c",
-                    backgroundImage:
-                      "linear-gradient(316deg, #99201c 0%, #f56545 74%)",
+                    backgroundColor: "#EE7501",
                     color: "white",
                     width: '100px',
                     fontSize: '16px',

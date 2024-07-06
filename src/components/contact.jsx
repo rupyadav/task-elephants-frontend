@@ -32,7 +32,7 @@ export const Contact = (props) => {
       );
   };
   return (
-    <div>
+    <div id="contact-us">
       <div id="contact">
         <div className="container">
           <div className="col-md-8">
@@ -121,13 +121,6 @@ export const Contact = (props) => {
               </p>
             </div>
           </div>
-        </div>
-      </div>
-      <div id="footer">
-        <div className="container text-center">
-          <p>
-            &copy;Copyrights 2024 | Task Elepahnts | All Rights Reserved
-          </p>
         </div>
       </div>
     </div>

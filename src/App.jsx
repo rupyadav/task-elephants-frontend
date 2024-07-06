@@ -12,6 +12,8 @@ import { Outsource } from "./components/outsource";
 import { DosDonts } from "./components/dosdonts";
 import { FadeInSection } from "./components/FadeInSection";
 import { PrimeReactProvider } from 'primereact/api';
+import WhatHowWhy from "./components/WhatHowWhy";
+import Footer from "./components/Footer";
         
 
 export const scroll = new SmoothScroll('a[href*="#"]', {
@@ -33,6 +35,9 @@ const App = () => {
         <About data={landingPageData.About} />
       </FadeInSection>
       <FadeInSection>
+        <WhatHowWhy />
+      </FadeInSection>
+      {/* <FadeInSection>
         <Services data={landingPageData.Services} />
       </FadeInSection>
       <FadeInSection>
@@ -40,12 +45,15 @@ const App = () => {
       </FadeInSection>
       <FadeInSection>
         <Outsource data={landingPageData.Outsource} />
-      </FadeInSection>
-      {/* <FadeInSection>
-        <Team data={landingPageData.Team} />
       </FadeInSection> */}
       <FadeInSection>
+        <Team/>
+      </FadeInSection>
+      <FadeInSection>
         <Contact data={landingPageData.Contact} />
+      </FadeInSection>
+      <FadeInSection>
+        <Footer />
       </FadeInSection>
       </PrimeReactProvider>
   );
