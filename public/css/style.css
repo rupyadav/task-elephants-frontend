@@ -11,6 +11,10 @@ html {
   /* background-color: #E4DDD8; */
 }
 
+#header{
+  padding-top: 50px;
+
+}
 body {
   animation: fadeInAnimation ease 3s;
   animation-iteration-count: 1;
@@ -936,9 +940,7 @@ label {
 }
 }
 @media (max-width: 768px) {
-  #about img {
-    margin: 50px 0;
-  }
+ 
   .intro h1 {
     font-size: 60px;
 }
@@ -993,11 +995,15 @@ height: 50%;
 }
 
 @media (max-width: 468px) {
-  #about img {
-    margin: 50px 0;
+  #header{
+    padding-top: 60px;
+
   }
   .intro h1 {
     font-size: 36px;
+}
+.about-us img{
+  height: 3rem;
 }
 .custom-header{
   display: flex;

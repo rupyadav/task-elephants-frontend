@@ -1,50 +1,51 @@
-import React, { useEffect, useRef, useState } from 'react';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import { styled } from '@mui/material/styles';
-import BenefitsToClients from './BenefitsToClients';
+import React, { useEffect, useRef, useState } from "react";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid";
+import { styled } from "@mui/material/styles";
+import BenefitsToClients from "./BenefitsToClients";
 
 const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
   padding: theme.spacing(1),
-  textAlign: 'center',
+  textAlign: "center",
   color: theme.palette.text.secondary,
 }));
 
 const CustomAccordion = styled(Accordion)(({ theme }) => ({
-  width: '100%',
-  color: '#333',
-  margin: '10px auto',
+  width: "100%",
+  color: "#333",
+  margin: "10px auto",
 }));
 
 const CustomAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
-  color: '#000',
+  color: "#000",
 }));
 
 const CustomAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
-  backgroundColor: '#ffffff',
-  color: '#605750',
+  backgroundColor: "#ffffff",
+  color: "#605750",
 }));
 
-const Container = styled('div')({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  width: '100%',
+const Container = styled("div")({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  width: "100%",
 });
 
 const GridItem = styled(Grid)(({ animationDirection }) => ({
   opacity: 0,
-  transform: animationDirection === 'right' ? 'translateX(20%)' : 'translateX(-20%)',
-  transition: 'opacity 1s, transform 1s',
-  '&.visible': {
+  transform:
+    animationDirection === "right" ? "translateX(20%)" : "translateX(-20%)",
+  transition: "opacity 1s, transform 1s",
+  "&.visible": {
     opacity: 1,
-    transform: 'translateX(0)',
+    transform: "translateX(0)",
   },
 }));
 
@@ -58,9 +59,9 @@ function WhyUsAccordion() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
+            entry.target.classList.add("visible");
           } else {
-            entry.target.classList.remove('visible');
+            entry.target.classList.remove("visible");
           }
         });
       },
@@ -69,7 +70,7 @@ function WhyUsAccordion() {
       }
     );
 
-    const items = ref.current.querySelectorAll('.grid-item');
+    const items = ref.current.querySelectorAll(".grid-item");
     items.forEach((item) => observer.observe(item));
 
     return () => {
@@ -78,8 +79,8 @@ function WhyUsAccordion() {
   }, []);
 
   useEffect(() => {
-    const accordions = ref.current.querySelectorAll('.MuiAccordion-root');
-    const heights = Array.from(accordions).map(acc => acc.scrollHeight);
+    const accordions = ref.current.querySelectorAll(".MuiAccordion-root");
+    const heights = Array.from(accordions).map((acc) => acc.scrollHeight);
     const maxHeight = Math.max(...heights);
     setMaxHeight(maxHeight);
   }, []);
@@ -90,9 +91,33 @@ function WhyUsAccordion() {
 
   return (
     <Container ref={ref}>
-      <Grid container spacing={1}>
-        <GridItem item xs={4} className="grid-item" animationDirection="right">
-          <CustomAccordion expanded={expanded} onChange={handleAccordionChange} style={{ height: expanded ? maxHeight : 'auto' }}>
+      <Grid
+        container
+        spacing={1}
+        sx={{
+          "@media (max-width: 600px)": {
+            flexDirection: "column",
+            gap: "10px",
+            alignItems: "center",
+          },
+        }}
+      >
+        <GridItem
+          item
+          xs={4}
+          className="grid-item"
+          animationDirection="right"
+          sx={{
+            "@media (max-width: 600px)": {
+              maxWidth: "100%",
+            },
+          }}
+        >
+          <CustomAccordion
+            expanded={expanded}
+            onChange={handleAccordionChange}
+            style={{ height: expanded ? maxHeight : "auto" }}
+          >
             <CustomAccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1-content"
@@ -101,13 +126,18 @@ function WhyUsAccordion() {
               Cost Savings
             </CustomAccordionSummary>
             <CustomAccordionDetails>
-              Lower your costs for a commoditized service, increase your margin, and ultimately your profit. Task Elephant
-              offers significantly lower rates utilizing qualified and experienced resources.
+              Lower your costs for a commoditized service, increase your margin,
+              and ultimately your profit. Task Elephant offers significantly
+              lower rates utilizing qualified and experienced resources.
             </CustomAccordionDetails>
           </CustomAccordion>
         </GridItem>
         <GridItem item xs={4} className="grid-item" animationDirection="right">
-          <CustomAccordion expanded={expanded} onChange={handleAccordionChange} style={{ height: expanded ? maxHeight : 'auto' }}>
+          <CustomAccordion
+            expanded={expanded}
+            onChange={handleAccordionChange}
+            style={{ height: expanded ? maxHeight : "auto" }}
+          >
             <CustomAccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel2-content"
@@ -116,13 +146,19 @@ function WhyUsAccordion() {
               Quality
             </CustomAccordionSummary>
             <CustomAccordionDetails>
-              We work with our clients to make sure we meet and exceed your quality expectations. During the scoping phase, we
-              identify specific client requirements to make sure we deliver to client needs expectations.
+              We work with our clients to make sure we meet and exceed your
+              quality expectations. During the scoping phase, we identify
+              specific client requirements to make sure we deliver to client
+              needs expectations.
             </CustomAccordionDetails>
           </CustomAccordion>
         </GridItem>
         <GridItem item xs={4} className="grid-item" animationDirection="right">
-          <CustomAccordion expanded={expanded} onChange={handleAccordionChange} style={{ height: expanded ? maxHeight : 'auto' }}>
+          <CustomAccordion
+            expanded={expanded}
+            onChange={handleAccordionChange}
+            style={{ height: expanded ? maxHeight : "auto" }}
+          >
             <CustomAccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel3-content"
@@ -131,13 +167,18 @@ function WhyUsAccordion() {
               Personalized Service
             </CustomAccordionSummary>
             <CustomAccordionDetails>
-              We offer in-person consultations and a dedicated US point of contact to make sure you have fluid communication
-              with our offshore delivery team.
+              We offer in-person consultations and a dedicated US point of
+              contact to make sure you have fluid communication with our
+              offshore delivery team.
             </CustomAccordionDetails>
           </CustomAccordion>
         </GridItem>
         <GridItem item xs={4} className="grid-item" animationDirection="left">
-          <CustomAccordion expanded={expanded} onChange={handleAccordionChange} style={{ height: expanded ? maxHeight : 'auto' }}>
+          <CustomAccordion
+            expanded={expanded}
+            onChange={handleAccordionChange}
+            style={{ height: expanded ? maxHeight : "auto" }}
+          >
             <CustomAccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel4-content"
@@ -146,13 +187,19 @@ function WhyUsAccordion() {
               Scalability
             </CustomAccordionSummary>
             <CustomAccordionDetails>
-              Our offshore providers can easily scale their team up or down to meet your workload demands. This is
-              particularly helpful for businesses with fluctuating bookkeeping needs. Only pay for what you need/use.
+              Our offshore providers can easily scale their team up or down to
+              meet your workload demands. This is particularly helpful for
+              businesses with fluctuating bookkeeping needs. Only pay for what
+              you need/use.
             </CustomAccordionDetails>
           </CustomAccordion>
         </GridItem>
         <GridItem item xs={4} className="grid-item" animationDirection="left">
-          <CustomAccordion expanded={expanded} onChange={handleAccordionChange} style={{ height: expanded ? maxHeight : 'auto' }}>
+          <CustomAccordion
+            expanded={expanded}
+            onChange={handleAccordionChange}
+            style={{ height: expanded ? maxHeight : "auto" }}
+          >
             <CustomAccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel5-content"
@@ -161,13 +208,18 @@ function WhyUsAccordion() {
               Focus on Your Business
             </CustomAccordionSummary>
             <CustomAccordionDetails>
-              By outsourcing bookkeeping, you free up your internal staff to focus on core business activities that can lead
-              to increases in revenue.
+              By outsourcing bookkeeping, you free up your internal staff to
+              focus on core business activities that can lead to increases in
+              revenue.
             </CustomAccordionDetails>
           </CustomAccordion>
         </GridItem>
         <GridItem item xs={4} className="grid-item" animationDirection="left">
-          <CustomAccordion expanded={expanded} onChange={handleAccordionChange} style={{ height: expanded ? maxHeight : 'auto' }}>
+          <CustomAccordion
+            expanded={expanded}
+            onChange={handleAccordionChange}
+            style={{ height: expanded ? maxHeight : "auto" }}
+          >
             <CustomAccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel6-content"
@@ -176,12 +228,13 @@ function WhyUsAccordion() {
               Follow the Sun Policy
             </CustomAccordionSummary>
             <CustomAccordionDetails>
-              Our team works outside of your regular business hours, leading to faster turnaround times for tasks.
+              Our team works outside of your regular business hours, leading to
+              faster turnaround times for tasks.
             </CustomAccordionDetails>
           </CustomAccordion>
         </GridItem>
       </Grid>
-      <div style={{ padding: '10px' }}>
+      <div style={{ padding: "10px" }}>
         <BenefitsToClients />
       </div>
     </Container>
