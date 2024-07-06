@@ -86,28 +86,27 @@ function WhatHowWhy() {
             </h2>
             <p>
               Give us a call to schedule a complimentary consultation to see how
-              Task Elephants can help <br />
+              Task Elephants can help </p>
               <div className="step-section">
                 <div className="circle">
-                  <p>Reduce Rour Costs</p>
+                  <p style={{color : '#fff'}}>Reduce Your Costs</p>
                 </div>
                 <img src="./img/down-img.png" className="down-arrow-img" />
                 <img src="../img/arrow.png" className="arrow-img" />
                 <div className="circle">
-                  <p>Increase Your Profits</p>
+                  <p style={{color : '#fff'}}>Increase Your Profits</p>
                 </div>
                 <img src="../img/down-img.png" className="down-arrow-img" />
                 <img src="../img/arrow.png" className="arrow-img" />
                 <div className="circle">
-                  <p>Reduce Stress</p>
+                  <p style={{color : '#fff'}}>Reduce Stress</p>
                 </div>
                 <img src="./img/down-img.png" className="down-arrow-img" />
                 <img src="../img/arrow.png" className="arrow-img" />
                 <div className="circle">
-                  <p>Grow Your Business</p>
+                  <p style={{color : '#fff'}}>Grow Your Business</p>
                 </div>
               </div>
-            </p>
           </div>
         </section>
       </div>

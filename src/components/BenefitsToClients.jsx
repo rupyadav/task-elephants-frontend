@@ -42,7 +42,7 @@ function BenefitsToClients() {
     <Container>
       <Box display="flex" flexDirection="column" alignItems="center" my={4}>
         <Typography
-          style={{ color: "#000", fontSize: "16px" }}
+          style={{ color: "#EE7501", fontSize: "18px", paddingBottom: '10px' }}
           variant="h4"
           component="h5"
           gutterBottom
@@ -50,19 +50,19 @@ function BenefitsToClients() {
           Benefit to Our Clients
         </Typography>
         <Grid container spacing={2} justifyContent="center">
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4} md={4}>
             <CostPaper>
               <ArrowDownwardIcon fontSize="large" />
               <Typography variant="h6">COST</Typography>
             </CostPaper>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4} md={4}>
             <MarginPaper>
               <ArrowUpwardIcon fontSize="large" />
               <Typography variant="h6">MARGIN</Typography>
             </MarginPaper>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={12} sm={4} md={4}>
             <ProfitPaper>
               <ArrowUpwardIcon fontSize="large" />
               <Typography variant="h6">PROFIT</Typography>

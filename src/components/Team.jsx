@@ -5,7 +5,7 @@ export const Team = (props) => {
     <div id="team" className="text-center">
       <section className="our-team">
         <div>
-          <h2>Meet the Team</h2>
+          <h2><img src="../img/teams.png" className="our-team-img" /> Meet the Team</h2>
           <p>
             Our full-time dedicated team in India comprises of over 20 dedicated
             experienced and certified staff. We have Associates, Seniors,
@@ -19,26 +19,6 @@ export const Team = (props) => {
           </div>
         </div>
       </section>
-      {/* <div className="container">
-        
-        </div> */}
-        {/* <div id="row">
-          {props.data
-            ? props.data.map((d, i) => (
-                <div key={`${d.name}-${i}`} className="col-md-3 col-sm-6 team">
-                  <div className="thumbnail">
-                    {" "}
-                    <img src={d.img} alt="..." className="team-img" />
-                    <div className="caption">
-                      <h4>{d.name}<span>{d.lastname}</span></h4>
-                      <p>{d.job}</p>
-                    </div>
-                  </div>
-                </div>
-              ))
-            : "loading"}
-        </div>
-      </div> */}
     </div>
   );
 };

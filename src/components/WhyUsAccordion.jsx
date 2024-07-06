@@ -36,6 +36,7 @@ const Container = styled("div")({
   flexDirection: "column",
   alignItems: "center",
   width: "100%",
+  padding: "20px",
 });
 
 const GridItem = styled(Grid)(({ animationDirection }) => ({
@@ -93,25 +94,17 @@ function WhyUsAccordion() {
     <Container ref={ref}>
       <Grid
         container
-        spacing={1}
-        sx={{
-          "@media (max-width: 600px)": {
-            flexDirection: "column",
-            gap: "10px",
-            alignItems: "center",
-          },
-        }}
+        spacing={2}
+        justifyContent="center"
+        alignItems="stretch"
       >
         <GridItem
           item
-          xs={4}
+          xs={12}
+          sm={6}
+          md={4}
           className="grid-item"
           animationDirection="right"
-          sx={{
-            "@media (max-width: 600px)": {
-              maxWidth: "100%",
-            },
-          }}
         >
           <CustomAccordion
             expanded={expanded}
@@ -132,7 +125,14 @@ function WhyUsAccordion() {
             </CustomAccordionDetails>
           </CustomAccordion>
         </GridItem>
-        <GridItem item xs={4} className="grid-item" animationDirection="right">
+        <GridItem
+          item
+          xs={12}
+          sm={6}
+          md={4}
+          className="grid-item"
+          animationDirection="right"
+        >
           <CustomAccordion
             expanded={expanded}
             onChange={handleAccordionChange}
@@ -153,7 +153,14 @@ function WhyUsAccordion() {
             </CustomAccordionDetails>
           </CustomAccordion>
         </GridItem>
-        <GridItem item xs={4} className="grid-item" animationDirection="right">
+        <GridItem
+          item
+          xs={12}
+          sm={6}
+          md={4}
+          className="grid-item"
+          animationDirection="right"
+        >
           <CustomAccordion
             expanded={expanded}
             onChange={handleAccordionChange}
@@ -173,7 +180,14 @@ function WhyUsAccordion() {
             </CustomAccordionDetails>
           </CustomAccordion>
         </GridItem>
-        <GridItem item xs={4} className="grid-item" animationDirection="left">
+        <GridItem
+          item
+          xs={12}
+          sm={6}
+          md={4}
+          className="grid-item"
+          animationDirection="left"
+        >
           <CustomAccordion
             expanded={expanded}
             onChange={handleAccordionChange}
@@ -194,7 +208,14 @@ function WhyUsAccordion() {
             </CustomAccordionDetails>
           </CustomAccordion>
         </GridItem>
-        <GridItem item xs={4} className="grid-item" animationDirection="left">
+        <GridItem
+          item
+          xs={12}
+          sm={6}
+          md={4}
+          className="grid-item"
+          animationDirection="left"
+        >
           <CustomAccordion
             expanded={expanded}
             onChange={handleAccordionChange}
@@ -214,7 +235,14 @@ function WhyUsAccordion() {
             </CustomAccordionDetails>
           </CustomAccordion>
         </GridItem>
-        <GridItem item xs={4} className="grid-item" animationDirection="left">
+        <GridItem
+          item
+          xs={12}
+          sm={6}
+          md={4}
+          className="grid-item"
+          animationDirection="left"
+        >
           <CustomAccordion
             expanded={expanded}
             onChange={handleAccordionChange}
@@ -234,7 +262,7 @@ function WhyUsAccordion() {
           </CustomAccordion>
         </GridItem>
       </Grid>
-      <div style={{ padding: "10px" }}>
+      <div style={{ padding: "20px" }}>
         <BenefitsToClients />
       </div>
     </Container>
