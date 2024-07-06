@@ -91,14 +91,17 @@ function WhatHowWhy() {
                 <div className="circle">
                   <p>Reduce Rour Costs</p>
                 </div>
+                <img src="./img/down-img.png" className="down-arrow-img" />
                 <img src="../img/arrow.png" className="arrow-img" />
                 <div className="circle">
                   <p>Increase Your Profits</p>
                 </div>
+                <img src="../img/down-img.png" className="down-arrow-img" />
                 <img src="../img/arrow.png" className="arrow-img" />
                 <div className="circle">
                   <p>Reduce Stress</p>
                 </div>
+                <img src="./img/down-img.png" className="down-arrow-img" />
                 <img src="../img/arrow.png" className="arrow-img" />
                 <div className="circle">
                   <p>Grow Your Business</p>

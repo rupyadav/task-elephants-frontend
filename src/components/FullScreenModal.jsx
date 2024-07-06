@@ -124,6 +124,7 @@ export default function FullScreenModal({ open, handleFullScreenModalClose }) {
             width: "100%",
             height: "100%",
             marginTop: 60,
+            backgroundColor: "#E4DDD8",
           }}
         >
           <Tabs

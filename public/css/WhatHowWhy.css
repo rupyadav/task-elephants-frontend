@@ -3,7 +3,9 @@
   padding-left: 24px;
   padding-right: 24px;
 }
-
+.down-arrow-img{
+  display: none;
+}
 .what-we-do {
   background: #E4DDD8;
   padding: 20px;
@@ -133,7 +135,7 @@
 }
 
 .data-protection img {
-  height: 7rem;
+  height: 6rem;
   padding-left: 35px;
   margin: auto;
 }
@@ -174,7 +176,7 @@
 }
 
 .next-step-img {
-  height: 7rem;
+  height: 6rem;
   padding-left: 35px;
   margin: auto;
   padding-right: 20px;
@@ -197,6 +199,7 @@
   font-weight: 400;
   color: #1E1E1C;
   text-align: center;
+  padding: 3px;
 }
 
 .circle {
@@ -422,7 +425,20 @@
   .why-us b {
     font-size: 15px;
   }
-
+  
+  @media (max-width: 768px) {
+    .team-img-div {
+      width: 100% !important;
+      margin: auto !important;
+    }
+    .down-arrow-img{
+      display: block;
+      height: 50px;
+            margin: 10px;
+    }
+    .arrow-img {
+      display: none;
+    }
   h5 {
     color: #EE7501 !important;
   }
@@ -487,6 +503,7 @@
     font-weight: 400;
     color: #1E1E1C;
     text-align: center;
+    padding: 3px;
   }
 
   .next-step-img {
@@ -504,7 +521,7 @@
   .circle {
     background-color: orange;
     border-radius: 80%;
-    width: 30%;
+    width: 40%;
     padding: 8px;
   }
 

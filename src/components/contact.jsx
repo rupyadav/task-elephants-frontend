@@ -34,11 +34,11 @@ export const Contact = (props) => {
   return (
     <div id="contact-us">
       <div id="contact">
+      <h2><img src="../img/contact_us.png" className="contact-us-img" />Get In Touch</h2>
         <div className="container">
           <div className="col-md-8">
             <div className="row">
-              <div className="section-title">
-                <h2>Get In Touch</h2>
+              <div className="section-title"> 
                 <p>
                 Our executive will contact you ASAP
                 </p>

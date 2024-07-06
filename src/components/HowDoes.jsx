@@ -102,7 +102,7 @@ function HowDoes() {
                 },
               }}
             >
-              <ItemLeft className="animate">
+              <ItemLeft className="animate" style={{marginLeft:"16px"}}>
                 Recording income and expenses
               </ItemLeft>
               <ItemLeft className="animate">Categorizing transactions</ItemLeft>
