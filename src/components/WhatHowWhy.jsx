@@ -88,22 +88,22 @@ function WhatHowWhy() {
               Give us a call to schedule a complimentary consultation to see how
               Task Elephants can help </p>
               <div className="step-section">
-                <div className="circle">
+                <div className="circle-1 circle">
                   <p style={{color : '#fff'}}>Reduce Your Costs</p>
                 </div>
                 <img src="./img/down-img.png" className="down-arrow-img" />
                 <img src="../img/arrow.png" className="arrow-img" />
-                <div className="circle">
+                <div className="circle-2 circle">
                   <p style={{color : '#fff'}}>Increase Your Profits</p>
                 </div>
                 <img src="../img/down-img.png" className="down-arrow-img" />
                 <img src="../img/arrow.png" className="arrow-img" />
-                <div className="circle">
+                <div className="circle-3 circle">
                   <p style={{color : '#fff'}}>Reduce Stress</p>
                 </div>
                 <img src="./img/down-img.png" className="down-arrow-img" />
                 <img src="../img/arrow.png" className="arrow-img" />
-                <div className="circle">
+                <div className="circle-4 circle">
                   <p style={{color : '#fff'}}>Grow Your Business</p>
                 </div>
               </div>

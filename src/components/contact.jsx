@@ -100,8 +100,8 @@ export const Contact = (props) => {
                 <span>
                   <i className="fa fa-map-marker"></i> Address
                 </span>
-                <b>USA - </b>{props.data ? props.data.usAddress : "loading"} <br></br><br></br>
-                <b>INDIA - </b>{props.data ? props.data.indAddress : "loading"}
+               {props.data ? props.data.usAddress : "loading"}
+                {/* <b>INDIA - </b>{props.data ? props.data.indAddress : "loading"} */}
               </p>
             </div>
             <div className="contact-item">
