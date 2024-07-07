@@ -71,12 +71,12 @@ function LoginDialog({ show, handleClose }) {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    console.log("Email:", email, "Password:", password);
-    console.log("login");
-    setIsLoggedIn(true);
+    // console.log("Email:", email, "Password:", password);
+    // console.log("login");
+    // setIsLoggedIn(true);
     // const response = loginUser({email, password});
     // console.log("response ", response, userDetails);
-    handleFullScreenModalClickOpen();
+    // handleFullScreenModalClickOpen();
   };
 
   const togglePasswordVisibility = () => {
@@ -229,9 +229,9 @@ function LoginDialog({ show, handleClose }) {
                 style={{
                   border: "2px solid",
                   borderRadius: "50px",
-                  backgroundColor: "#99201c",
+                  backgroundColor: "#EE7501",
                   backgroundImage:
-                    "linear-gradient(316deg, #99201c 0%, #f56545 74%)",
+                    "linear-gradient(316deg, #EE7501 0%, #EE7501 74%)",
                   color: "white",
                   width: '100px',
                   fontSize: '16px',
