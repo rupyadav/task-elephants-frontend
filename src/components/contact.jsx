@@ -40,7 +40,7 @@ export const Contact = (props) => {
             <div className="row">
               <div className="section-title"> 
                 <p>
-                Our executive will contact you ASAP
+                Please use the contact form below to send us a message
                 </p>
               </div>
               <form name="sentMessage" onSubmit={handleSubmit}>
@@ -117,7 +117,7 @@ export const Contact = (props) => {
                 <span>
                   <i className="fa fa-envelope-o"></i> Email
                 </span>{" "}
-                {props.data ? props.data.email : "loading"}
+                <a className="email-id" href={`mailto:${props.data?.email}`}>{props.data ? props.data.email : "loading"}</a>
               </p>
             </div>
           </div>

@@ -979,3 +979,12 @@ background-image: linear-gradient(315deg, #f06543 0%, #ffbe3d 74%);
 	margin-left: auto;
 	color: #7875B5;
 }
+
+.email-id {
+  text-decoration: none;
+  color: #1E1E1C;
+}
+.email-id:hover {
+  text-decoration: underline;
+  color: #1E1E1C;
+}

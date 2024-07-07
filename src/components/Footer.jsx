@@ -5,7 +5,7 @@ function Footer() {
     <div id="footer">
     <div className="container text-center">
       <p>
-        &copy;Copyrights 2024 | Task Elepahnts | All Rights Reserved
+        &copy;Copyrights 2024 | Task Elephants | All Rights Reserved
       </p>
     </div>
   </div>
