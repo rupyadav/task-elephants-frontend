@@ -50,13 +50,29 @@ function LoginDialog({ show, handleClose }) {
 
   const loginUser = async (credentials) => {
     try {
-      const res = await fetch(`${BACKEND_SERVER}/login`, {
+      const res = await fetch(`${BACKEND_SERVER}/stag/login/verify-user`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify(credentials),
+        body: JSON.stringify({
+          'email': credentials.email,
+          'password': credentials.password
+        }),
       });
+      console.log("res", res);
+
+      if (res.status === 401) {
+        console.log("Unauthorized");
+        return;
+      } else if (res.status === 200) {
+        console.log("Authorized");
+        // Generate OTP
+        // Send OTP and verified OTP
+        // Get JWT token
+        // Save JWT token in local storage
+      }
+
       let json_res = await res.json();
       setUserDetails({ authToken: json_res.token });
       localStorage.setItem("authToken", json_res.token);
@@ -71,12 +87,14 @@ function LoginDialog({ show, handleClose }) {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    // console.log("Email:", email, "Password:", password);
-    // console.log("login");
-    // setIsLoggedIn(true);
-    // const response = loginUser({email, password});
-    // console.log("response ", response, userDetails);
-    // handleFullScreenModalClickOpen();
+    console.log("Email:", email, "Password:", password);
+    
+
+    console.log("login");
+    setIsLoggedIn(true);
+    const response = loginUser({email, password});
+    console.log("response ", response, userDetails);
+    handleFullScreenModalClickOpen();
   };
 
   const togglePasswordVisibility = () => {
