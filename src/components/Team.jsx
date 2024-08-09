@@ -15,7 +15,7 @@ export const Team = (props) => {
             experience
           </p>
           <div className="team-img-div">
-          <img src="../img/team.jpeg" className="team-img" />
+          <img src="../img/team1.jpg" className="team-img" />
           </div>
         </div>
       </section>

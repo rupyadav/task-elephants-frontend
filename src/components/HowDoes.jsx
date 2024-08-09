@@ -2,6 +2,7 @@ import React from "react";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import { styled, keyframes } from "@mui/material/styles";
+import DownloadPdf from "./DownloadPdf";
 
 // Define keyframes for the animations
 const slideInFromLeft = keyframes`
@@ -111,6 +112,9 @@ function HowDoes() {
               </ItemRight>
               <ItemRight className="animate">Generating reports</ItemRight>
             </Stack>
+          </div>
+          <div>
+            <DownloadPdf />
           </div>
           <p>
             We are available via email, phone, or video conference to answer any
