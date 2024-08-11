@@ -1,1 +1,1 @@
-export const BACKEND_SERVER = "https://abc.com";
+export const BACKEND_SERVER = "https://6lj56pwootopxnmun5ggo4jnoy0vsaek.lambda-url.us-east-1.on.aws";

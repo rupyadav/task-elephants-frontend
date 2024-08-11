@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Button } from "react-bootstrap";
 import LoginDialog from "./LoginDialog";
+import MultifactorLogin from "./MultifactorLogin";
 
 export const Navigation = () => {
   const [show, setShow] = useState(false);
@@ -122,7 +123,8 @@ export const Navigation = () => {
                 </Button>
               </li>
             </ul>
-            {show && <LoginDialog show={show} handleClose={handleClose} />}
+            {show && <MultifactorLogin  handleClose={handleClose} />}
+            {/* {show && <LoginDialog show={show} handleClose={handleClose} />} */}
           </div>
         </div>
       </nav>
