@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, TextField, Button, Typography, DialogActions, Box, IconButton, useMediaQuery } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, TextField, Button, Typography, DialogActions, Box, IconButton, CircularProgress, useMediaQuery } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import FullScreenModal from './FullScreenModal';
 import { BACKEND_SERVER } from '../constants';
 import { Close } from '@material-ui/icons';
+import Dashboard from './Dashboard';
 
 const DialogTitleStyled = styled(DialogTitle)(({ theme }) => ({
     textAlign: 'center',
@@ -89,6 +90,19 @@ const ResetLink = styled(Typography)(({ theme }) => ({
     },
 }));
 
+const LoaderOverlay = styled(Box)(({ theme }) => ({
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black background
+    zIndex: 1400, // Ensure it is on top of all other elements including dialogs
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+}));
+
 const MultifactorLogin = ({ handleClose }) => {
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -105,8 +119,12 @@ const MultifactorLogin = ({ handleClose }) => {
     const [forgotPasswordStep, setForgotPasswordStep] = useState(1);
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [role, setRole] = useState('admin');
+    const [passwordReset, setPasswordReset] = useState(false);
+    const [loading, setLoading] = useState(false); // Loader state
 
     const authenticateUser = async () => {
+        setLoading(true); // Start loader
         try {
             const response = await fetch(`${BACKEND_SERVER}/stag/login/verify-user`, {
                 method: 'POST',
@@ -114,24 +132,30 @@ const MultifactorLogin = ({ handleClose }) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    'email': email,
-                    'password': password
+                    email: email,
+                    password: password,
                 }),
             });
             if (response.ok) {
                 setStep(2);
+                setPasswordReset(false);
                 let json_res = await response.json();
                 setUserID(json_res.userId);
+                setOtp('');
                 sendOtp(json_res.userId, email);
             } else {
                 setError('Invalid email or password');
+                setPasswordReset(false);
             }
         } catch (error) {
             setError('Something went wrong. Please try again.');
+        } finally {
+            setLoading(false); // Stop loader
         }
     };
 
     const sendOtp = async (userId, email) => {
+        setLoading(true); // Start loader
         try {
             const response = await fetch(`${BACKEND_SERVER}/stag/login/generate-otp`, {
                 method: 'POST',
@@ -139,8 +163,8 @@ const MultifactorLogin = ({ handleClose }) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    'userId': userId,
-                    'email': email,
+                    userId: userId,
+                    email: email,
                 }),
             });
             if (!response.ok) {
@@ -153,10 +177,13 @@ const MultifactorLogin = ({ handleClose }) => {
             }
         } catch (error) {
             setError('Something went wrong. Please try again.');
+        } finally {
+            setLoading(false); // Stop loader
         }
     };
 
     const validateOtp = async (userId, otp) => {
+        setLoading(true); // Start loader
         try {
             const response = await fetch(`${BACKEND_SERVER}/stag/login/verify-otp`, {
                 method: 'POST',
@@ -164,14 +191,14 @@ const MultifactorLogin = ({ handleClose }) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    'userId': userId,
-                    'otp': otp,
+                    userId: userId,
+                    otp: parseInt(otp),
                 }),
             });
 
             if (response.ok) {
                 let json_res = await response.json();
-                localStorage.setItem("authToken", json_res.token);
+                localStorage.setItem('token', json_res.token);
                 handleFullScreenModalClickOpen();
             } else {
                 setError('Invalid OTP. Please try again.');
@@ -179,6 +206,8 @@ const MultifactorLogin = ({ handleClose }) => {
             }
         } catch (error) {
             setError('Something went wrong. Please try again.');
+        } finally {
+            setLoading(false); // Stop loader
         }
     };
 
@@ -192,26 +221,33 @@ const MultifactorLogin = ({ handleClose }) => {
 
     const handleFullScreenModalClose = () => {
         setOpen(false);
+        localStorage.removeItem('token');
     };
 
     const handleForgotPasswordSubmit = async () => {
+        setLoading(true); // Start loader
         if (forgotPasswordStep === 1) {
             try {
-                const response = await fetch(`${BACKEND_SERVER}/stag/login/check-email`, {
+                const response = await fetch(`${BACKEND_SERVER}/stag/login/validate-email`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ email }),
+                    body: JSON.stringify({ email: email }),
                 });
+
                 if (response.ok) {
-                    setForgotPasswordStep(2);
+                    let json_res = await response.json();
+                    setUserID(json_res.userId);
+                    sendOtpForReset(json_res.userId, email);
                     setError('');
                 } else {
                     setError('Email does not exist. Please try again.');
                 }
             } catch (error) {
                 setError('Something went wrong. Please try again.');
+            } finally {
+                setLoading(false); // Stop loader
             }
         } else if (forgotPasswordStep === 2) {
             if (newPassword !== confirmPassword) {
@@ -226,30 +262,61 @@ const MultifactorLogin = ({ handleClose }) => {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        email,
-                        newPassword,
+                        userId: userID,
+                        otp: parseInt(otp),
+                        newPassword: newPassword,
                     }),
                 });
                 if (response.ok) {
                     setForgotPasswordOpen(false);
+                    setStep(1);
                     setError('');
-                    alert('Password has been reset successfully!');
+                    setPasswordReset(true);
                 } else {
                     setError('Failed to reset password. Please try again.');
+                    setOtpSuccess(false);
                 }
             } catch (error) {
                 setError('Something went wrong. Please try again.');
+            } finally {
+                setLoading(false); // Stop loader
             }
+        }
+    };
+
+    const sendOtpForReset = async (userId, email) => {
+        setLoading(true); // Start loader
+        try {
+            const response = await fetch(`${BACKEND_SERVER}/stag/login/generate-otp`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userId: userId,
+                    email: email,
+                }),
+            });
+            if (!response.ok) {
+                setForgotPasswordStep(1);
+                setError('Failed to send OTP. Please try again.');
+                setOtpSuccess(false);
+            } else {
+                setForgotPasswordStep(2);
+                setOtpSuccess(true);
+                setError('');
+            }
+        } catch (error) {
+            setError('Something went wrong. Please try again.');
+        } finally {
+            setLoading(false); // Stop loader
         }
     };
 
     return (
         <div>
             {open && (
-                <FullScreenModal
-                    open={open}
-                    handleFullScreenModalClose={handleFullScreenModalClose}
-                />
+                <Dashboard open={open} handleFullScreenModalClose={handleFullScreenModalClose} role={role} />
             )}
             <Dialog
                 open={step === 1}
@@ -263,19 +330,26 @@ const MultifactorLogin = ({ handleClose }) => {
                     },
                 }}
             >
-                <DialogTitleStyled>Login
+                <DialogTitleStyled>
+                    Login
                     <IconButton
                         edge="end"
                         color="inherit"
                         onClick={handleClose}
                         aria-label="close"
-                        style={{ position: "absolute", right: 15, top: 4 }}
+                        style={{ position: 'absolute', right: 15, top: 4 }}
                     >
                         <Close />
                     </IconButton>
                 </DialogTitleStyled>
                 <DialogContent>
+                    {loading && (
+                        <LoaderOverlay>
+                            <CircularProgress color="inherit" />
+                        </LoaderOverlay>
+                    )}
                     {error && <ErrorMessage>{error}</ErrorMessage>}
+                    {passwordReset && <SuccessMessage>Password has been Reset Successfully. Please Login.</SuccessMessage>}
                     <TextFieldStyled
                         label="Email"
                         placeholder="Enter your email"
@@ -294,14 +368,12 @@ const MultifactorLogin = ({ handleClose }) => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    <ResetLink onClick={handleReset}>
-                        Forgot email ID or password?
-                    </ResetLink>
+                    <ResetLink onClick={handleReset}>Forgot email ID or password?</ResetLink>
                 </DialogContent>
-                <DialogActions style={{ position: isSmallScreen ? 'relative' : 'absolute', bottom: 0, right: 0 }}>
-                    <SubmitButton onClick={authenticateUser}>
-                        Submit
-                    </SubmitButton>
+                <DialogActions
+                    style={{ position: isSmallScreen ? 'relative' : 'absolute', bottom: 0, right: 0 }}
+                >
+                    <SubmitButton onClick={authenticateUser}>Submit</SubmitButton>
                 </DialogActions>
             </Dialog>
 
@@ -319,29 +391,36 @@ const MultifactorLogin = ({ handleClose }) => {
             >
                 <DialogTitleStyled>Enter OTP</DialogTitleStyled>
                 <DialogContent>
+                    {loading && (
+                        <LoaderOverlay>
+                            <CircularProgress color="inherit" />
+                        </LoaderOverlay>
+                    )}
                     {error && <ErrorMessage>{error}</ErrorMessage>}
-                    {otpSuccess && <SuccessMessage>Otp Successfully sent to your registered email address: {email} </SuccessMessage>}
+                    {otpSuccess && (
+                        <SuccessMessage>
+                            Otp Successfully sent to your registered email address: {email}{' '}
+                        </SuccessMessage>
+                    )}
                     <OtpInputContainer>
                         <TextField
                             type="text"
                             variant="outlined"
+                            placeholder="OTP"
                             value={otp}
                             onChange={(e) => setOtp(e.target.value)}
                             inputProps={{ maxLength: 4, style: { textAlign: 'center' } }}
                         />
-                        <IconButton
-                            onClick={() => sendOtp(userID, email)}
-                            aria-label="resend OTP"
-                        >
+                        <IconButton onClick={() => sendOtp(userID, email)} aria-label="resend OTP">
                             <RefreshIcon />
                         </IconButton>
                     </OtpInputContainer>
                     <OtpInfoText>OTP is valid for 15 minutes.</OtpInfoText>
                 </DialogContent>
-                <DialogActions style={{ position: isSmallScreen ? 'relative' : 'absolute', bottom: 0, right: 0 }}>
-                    <SubmitButton onClick={() => validateOtp(userID, otp)}>
-                        Submit
-                    </SubmitButton>
+                <DialogActions
+                    style={{ position: isSmallScreen ? 'relative' : 'absolute', bottom: 0, right: 0 }}
+                >
+                    <SubmitButton onClick={() => validateOtp(userID, otp)}>Submit</SubmitButton>
                 </DialogActions>
             </Dialog>
 
@@ -357,19 +436,30 @@ const MultifactorLogin = ({ handleClose }) => {
                     },
                 }}
             >
-                <DialogTitleStyled>Forgot Password
-                <IconButton
+                <DialogTitleStyled>
+                    Forgot Password
+                    <IconButton
                         edge="end"
                         color="inherit"
                         onClick={() => setForgotPasswordOpen(false)}
                         aria-label="close"
-                        style={{ position: "absolute", right: 15, top: 4 }}
+                        style={{ position: 'absolute', right: 15, top: 4 }}
                     >
                         <Close />
                     </IconButton>
                 </DialogTitleStyled>
                 <DialogContent>
+                    {loading && (
+                        <LoaderOverlay>
+                            <CircularProgress color="inherit" />
+                        </LoaderOverlay>
+                    )}
                     {error && <ErrorMessage>{error}</ErrorMessage>}
+                    {otpSuccess && (
+                        <SuccessMessage>
+                            Otp Successfully sent to your registered email address: {email}{' '}
+                        </SuccessMessage>
+                    )}
                     {forgotPasswordStep === 1 && (
                         <TextFieldStyled
                             label="Registered Email"
@@ -401,13 +491,29 @@ const MultifactorLogin = ({ handleClose }) => {
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                             />
+                            <OtpInputContainer>
+                                <TextField
+                                    type="text"
+                                    variant="outlined"
+                                    value={otp}
+                                    onChange={(e) => setOtp(e.target.value)}
+                                    inputProps={{ maxLength: 4, style: { textAlign: 'center' } }}
+                                />
+                                <IconButton
+                                    onClick={() => sendOtpForReset(userID, email)}
+                                    aria-label="resend OTP for Reset"
+                                >
+                                    <RefreshIcon />
+                                </IconButton>
+                            </OtpInputContainer>
+                            <OtpInfoText>OTP is valid for 15 minutes.</OtpInfoText>
                         </>
                     )}
                 </DialogContent>
-                <DialogActions style={{ position: isSmallScreen ? 'relative' : 'absolute', bottom: 0, right: 0 }}>
-                    <SubmitButton onClick={handleForgotPasswordSubmit}>
-                        Submit
-                    </SubmitButton>
+                <DialogActions
+                    style={{ position: isSmallScreen ? 'relative' : 'absolute', bottom: 0, right: 0 }}
+                >
+                    <SubmitButton onClick={handleForgotPasswordSubmit}>Submit</SubmitButton>
                 </DialogActions>
             </Dialog>
         </div>

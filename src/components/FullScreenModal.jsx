@@ -25,7 +25,7 @@ export default function FullScreenModal({ open, handleFullScreenModalClose }) {
     setTabValue(newValue);
   };
 
-  const role = "user";
+  const role = "admin";
 
   const userDoc = [
     { id: 1, name: "Document 1" },
