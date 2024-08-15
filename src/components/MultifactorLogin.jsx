@@ -11,6 +11,7 @@ const DialogTitleStyled = styled(DialogTitle)(({ theme }) => ({
     textAlign: 'center',
     color: '#EE7501',
     fontWeight: 'bold',
+    fontSize : '16px'
 }));
 
 const TextFieldStyled = styled(TextField)(({ theme }) => ({
@@ -88,6 +89,7 @@ const ResetLink = styled(Typography)(({ theme }) => ({
     '&:hover': {
         textDecoration: 'underline',
     },
+    fontSize : '12px'
 }));
 
 const LoaderOverlay = styled(Box)(({ theme }) => ({
@@ -122,6 +124,7 @@ const MultifactorLogin = ({ handleClose }) => {
     const [role, setRole] = useState('admin');
     const [passwordReset, setPasswordReset] = useState(false);
     const [loading, setLoading] = useState(false); // Loader state
+    const [userName, setUserName] = useState('');
 
     const authenticateUser = async () => {
         setLoading(true); // Start loader
@@ -199,6 +202,8 @@ const MultifactorLogin = ({ handleClose }) => {
             if (response.ok) {
                 let json_res = await response.json();
                 localStorage.setItem('token', json_res.token);
+                setRole(json_res.user_role);
+                setUserName(json_res.name);
                 handleFullScreenModalClickOpen();
             } else {
                 setError('Invalid OTP. Please try again.');
@@ -222,6 +227,11 @@ const MultifactorLogin = ({ handleClose }) => {
     const handleFullScreenModalClose = () => {
         setOpen(false);
         localStorage.removeItem('token');
+        setStep(1);
+        setEmail('');
+        setPassword('');
+        setError('');
+        setOtpSuccess(false)
     };
 
     const handleForgotPasswordSubmit = async () => {
@@ -315,9 +325,7 @@ const MultifactorLogin = ({ handleClose }) => {
 
     return (
         <div>
-            {open && (
-                <Dashboard open={open} handleFullScreenModalClose={handleFullScreenModalClose} role={role} />
-            )}
+            {open && <Dashboard open={open} handleFullScreenModalClose={handleFullScreenModalClose} role={role} userName={userName} userID={userID}/>}
             <Dialog
                 open={step === 1}
                 onClose={handleClose}
@@ -368,12 +376,13 @@ const MultifactorLogin = ({ handleClose }) => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    <ResetLink onClick={handleReset}>Forgot email ID or password?</ResetLink>
+                    <ResetLink onClick={handleReset} sx={{ marginBottom : '20px'}}>Forgot email ID or password?</ResetLink>
                 </DialogContent>
                 <DialogActions
                     style={{ position: isSmallScreen ? 'relative' : 'absolute', bottom: 0, right: 0 }}
                 >
                     <SubmitButton onClick={authenticateUser}>Submit</SubmitButton>
+                    {/* <SubmitButton onClick={() => handleFullScreenModalClickOpen()}>Submit</SubmitButton> */}
                 </DialogActions>
             </Dialog>
 
@@ -389,7 +398,17 @@ const MultifactorLogin = ({ handleClose }) => {
                     },
                 }}
             >
-                <DialogTitleStyled>Enter OTP</DialogTitleStyled>
+                <DialogTitleStyled>Enter OTP
+                <IconButton
+                        edge="end"
+                        color="inherit"
+                        onClick={() => handleClose()}
+                        aria-label="close"
+                        style={{ position: 'absolute', right: 15, top: 4 }}
+                    >
+                        <Close />
+                    </IconButton>
+                </DialogTitleStyled>
                 <DialogContent>
                     {loading && (
                         <LoaderOverlay>

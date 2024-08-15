@@ -22,7 +22,7 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { DataGrid } from '@mui/x-data-grid';
-import { Close, Refresh, Delete, Edit, Visibility } from '@material-ui/icons';
+import { Close, Refresh, Delete, Edit, Visibility, List } from '@material-ui/icons';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BACKEND_SERVER } from '../constants';
@@ -40,8 +40,19 @@ const TitleStyled = styled(DialogTitle)(({ theme }) => ({
     textAlign: 'center',
     color: '#EE7501',
     fontWeight: 'bold',
+    fontSize: '20px',
+    backgroundColor: '#E4DDD8',
+    fontFamily:'Georgia, serif'
+}));
+
+const ModalTitleStyled = styled(DialogTitle)(({ theme }) => ({
+    textAlign: 'center',
+    color: '#EE7501',
+    fontWeight: 'bold',
     fontSize: '1.5rem',
     backgroundColor: '#E4DDD8',
+    marginBottom : '20px',
+    fontFamily:'Georgia, serif'
 }));
 
 const SubmitButton = styled(Button)(({ theme }) => ({
@@ -79,6 +90,8 @@ const LogoutButton = styled(Button)(({ theme }) => ({
     position: 'absolute',
     right: theme.spacing(2),
     top: theme.spacing(2),
+    paddingLeft: '10px',
+    paddingRight: '10px'
 }));
 
 const TextFieldStyled = styled(TextField)(({ theme }) => ({
@@ -97,7 +110,7 @@ const TextFieldStyled = styled(TextField)(({ theme }) => ({
 }));
 
 const DataGridStyled = styled(DataGrid)(({ theme }) => ({
-    fontSize: '1rem',
+    fontSize: '1.2rem',
     paddingLeft: theme.spacing(3),
     paddingRight: theme.spacing(3),
     '& .MuiDataGrid-cell': {
@@ -106,7 +119,7 @@ const DataGridStyled = styled(DataGrid)(({ theme }) => ({
     },
     '& .MuiDataGrid-columnHeaders': {
         fontSize: '1.4rem',
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#EE7501',
         borderBottom: '1px solid #ddd',
         fontWeight: 'bold',
     },
@@ -131,7 +144,7 @@ const LoaderOverlay = styled(Box)(({ theme }) => ({
     zIndex: 9999,
 }));
 
-const AdminDashboard = ({ open, onClose, role }) => {
+const AdminDashboard = ({ open, onClose, userName }) => {
     const [clients, setClients] = useState([]);
     const [selectedClient, setSelectedClient] = useState(null);
     const [documentStatus, setDocumentStatus] = useState('');
@@ -149,10 +162,8 @@ const AdminDashboard = ({ open, onClose, role }) => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (role === 'admin') {
             fetchClients();
-        }
-    }, [role]);
+    }, []);
 
     const fetchClients = async () => {
         setLoading(true);
@@ -335,7 +346,25 @@ const AdminDashboard = ({ open, onClose, role }) => {
         { field: 'name', headerName: 'Name', width: 200 },
         { field: 'email', headerName: 'Email', width: 250 },
         { field: 'user_role', headerName: 'Role', width: 150 },
-        { field: 'status', headerName: 'Status', width: 150 },
+        {
+            field: 'status',
+            headerName: 'Status',
+            width: 150,
+            renderCell: (params) => (
+                <Button
+                    variant="contained"
+                    style={{
+                        backgroundColor: params.value === 'active' ? '#4CAF50' : '#BDBDBD',
+                        color: '#fff',
+                        marginTop : '10px',
+                        cursor: 'default', // Ensure the cursor stays default
+                        pointerEvents: 'none', // Prevent any interaction
+                    }}
+                >
+                    {params.value}
+                </Button>
+            ),
+        },
         {
             field: 'actions',
             headerName: 'Actions',
@@ -344,7 +373,7 @@ const AdminDashboard = ({ open, onClose, role }) => {
                 <Box display="flex" gap={1} justifyContent="center">
                     {params.row.user_role === 'user' && (
                         <Tooltip title="View Documents">
-                            <IconButton color="primary" onClick={() => handleClientSelect(params.row)}>
+                            <IconButton color="success" onClick={() => handleClientSelect(params.row)}>
                                 <Visibility />
                             </IconButton>
                         </Tooltip>
@@ -356,13 +385,14 @@ const AdminDashboard = ({ open, onClose, role }) => {
                             setClientEmail(params.row.email);
                             setClientRole(params.row.user_role);
                             setClientStatus(params.row.status);
+                            handleClientSelect(params.row);
                             setUpdateModalOpen(true);
                         }}>
                             <Edit />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
-                        <IconButton color="secondary" onClick={() => {
+                        <IconButton color="error" onClick={() => {
                             setClientToDelete(params.row);
                             setDeleteModalOpen(true);
                         }}>
@@ -371,8 +401,9 @@ const AdminDashboard = ({ open, onClose, role }) => {
                     </Tooltip>
                 </Box>
             ),
-        }
+        },
     ];
+    
 
     const handleOnboardClientModal = () => {
         setClientName('');
@@ -383,11 +414,16 @@ const AdminDashboard = ({ open, onClose, role }) => {
         setOnboardModalOpen(true);
     }
 
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        onClose();
+    }
+
     return (
         <FullPageDialog open={open} onClose={onClose} fullScreen>
             <TitleStyled>
-                Admin Dashboard
-                <LogoutButton onClick={onClose}>
+                Admin Dashboard for {userName}
+                <LogoutButton onClick={() => handleLogout()}>
                     Logout
                 </LogoutButton>
             </TitleStyled>
@@ -398,10 +434,9 @@ const AdminDashboard = ({ open, onClose, role }) => {
                         <CircularProgress color="inherit" />
                     </LoaderOverlay>
                 )}
-                {role === 'admin' && (
                     <Box>
-                        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} sx={{margin : '20px'}}>
-                            <Typography variant="h6" color="#EE7501" fontWeight="bold">
+                        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} sx={{marginTop : '20px', marginBottom : '20px'}}>
+                            <Typography variant="h6" color="#000" fontWeight="bold" fontSize='14px' >
                                 Client List
                             </Typography>
                             <Box display="flex" alignItems="center" gap={2}>
@@ -413,13 +448,10 @@ const AdminDashboard = ({ open, onClose, role }) => {
                                     startIcon={<Refresh />}
                                     onClick={fetchClients}
                                     color="primary"
-                                    style={{ width: '150px' }}
-                                >
-                                    Refresh
-                                </CustomButton>
+                                 />
                             </Box>
                         </Box>
-
+                        <div style={{ width: '80%', margin: 'auto'}}>
                         <TableContainer component={Paper}>
                             <DataGridStyled
                                 rows={clients}
@@ -429,62 +461,79 @@ const AdminDashboard = ({ open, onClose, role }) => {
                                 autoHeight
                             />
                         </TableContainer>
-
+                        </div>
                         {selectedClient && selectedClient.user_role === 'user' && (
                             <Box mt={4}>
-                                <Typography variant="h6" color="#EE7501" fontWeight="bold">Manage Documents for {selectedClient.name}</Typography>
+                                <Typography variant="h6" color="#000" fontWeight="bold" fontSize='14px'>Manage Documents for <span style={{ color: '#EE7501'}}>{selectedClient.name}</span></Typography>
+                                <div style={{ width: '80%', margin: 'auto'}}>
                                 <TableContainer component={Paper} sx={{ mt: 2 }}>
                                     <Table>
                                         <TableBody>
                                             {documents.map((doc) => (
                                                 <TableRow key={doc.id}>
-                                                    <TableCell>
+                                                    <TableCell sx={{ fontSize: '12px'}}>
                                                         <a href={doc.file_path} download>
                                                             {(doc.file_path).split('/')[5]}
                                                         </a>
                                                     </TableCell>
+                                                    <TableCell sx={{ fontSize: '12px'}}>{doc.doc_status === 'in_review' ? 'In Review' : ''}</TableCell>
                                                     <TableCell>
                                                         <Select
-                                                            value={doc.status}
+                                                            value={doc.doc_status}
+                                                            sx={{ fontSize: '12px'}}
                                                             onChange={(e) => handleDocumentStatusChange(doc.id, e.target.value)}
                                                         >
-                                                            <MenuItem value="pending">Pending</MenuItem>
+                                                            <MenuItem value="in_review">In Review</MenuItem>
                                                             <MenuItem value="approved">Approved</MenuItem>
-                                                            <MenuItem value="reupload">Reupload</MenuItem>
+                                                            <MenuItem value="in_process">In Process</MenuItem>
+                                                            <MenuItem value="processed">Processed</MenuItem>
                                                             <MenuItem value="incorrect">Incorrect</MenuItem>
                                                         </Select>
                                                     </TableCell>
                                                     <TableCell>
-                                                        <Button variant="contained" color="primary" onClick={() => handleDocumentStatusChange(doc.id, 'reupload')}>
-                                                            Reupload
-                                                        </Button>
+                                                        <CustomButton variant="contained" color="primary" onClick={() => handleDocumentStatusChange(doc.id, 'reupload')}>
+                                                            Update Status
+                                                        </CustomButton>
                                                     </TableCell>
                                                 </TableRow>
                                             ))}
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
-
+                                </div>
                                 <Box mt={4}>
-                                    <Typography variant="h6" color="#EE7501" fontWeight="bold">Upload Report for {selectedClient.name}</Typography>
+                                    <Typography variant="h6" color="#000" fontWeight="bold" fontSize='14px'>Upload Report for {selectedClient.name}</Typography>
+                                    <div style={{ width: '80%', paddingLeft: '40%'}}>
                                     <input
                                         type="file"
                                         onChange={(e) => setNewReport(e.target.files[0])}
                                         style={{ display: 'block', margin: '10px 0' }}
                                     />
-                                    <Button variant="contained" color="primary" onClick={handleReportUpload} style={{ width: '150px' }}>
+                                    </div>
+                                    <div style={{ width: '80%', paddingLeft: '40%', paddingBottom : '20px'}}>
+                                    <CustomButton variant="contained" color="primary" onClick={handleReportUpload}>
                                         Upload Report
-                                    </Button>
+                                    </CustomButton>
+                                    </div>
                                 </Box>
                             </Box>
                         )}
                     </Box>
-                )}
             </DialogContent>
 
             {/* Onboard Client Modal */}
             <Dialog open={onboardModalOpen} onClose={() => setOnboardModalOpen(false)} maxWidth="sm" fullWidth>
-                <TitleStyled>Onboard New Client</TitleStyled>
+                <ModalTitleStyled>Onboard New Client
+                <IconButton
+                        edge="end"
+                        color="inherit"
+                        onClick={()=> setOnboardModalOpen(false)}
+                        aria-label="close"
+                        style={{ position: 'absolute', right: 15, top: 4 }}
+                    >
+                        <Close />
+                    </IconButton>
+                </ModalTitleStyled>
                 {loading && (
                     <LoaderOverlay>
                         <CircularProgress color="inherit" />
@@ -546,7 +595,17 @@ const AdminDashboard = ({ open, onClose, role }) => {
 
             {/* Update Client Modal */}
             <Dialog open={updateModalOpen} onClose={() => setUpdateModalOpen(false)} maxWidth="sm" fullWidth>
-                <TitleStyled>Update Client Details</TitleStyled>
+                <ModalTitleStyled>Update Client Details
+                <IconButton
+                        edge="end"
+                        color="inherit"
+                        onClick={()=> setUpdateModalOpen(false)}
+                        aria-label="close"
+                        style={{ position: 'absolute', right: 15, top: 4 }}
+                    >
+                        <Close />
+                    </IconButton>
+                </ModalTitleStyled>
                 {loading && (
                     <LoaderOverlay>
                         <CircularProgress color="inherit" />
@@ -600,7 +659,17 @@ const AdminDashboard = ({ open, onClose, role }) => {
 
             {/* Delete Confirmation Modal */}
             <Dialog open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)} maxWidth="sm" fullWidth>
-                <TitleStyled>Confirm Deletion</TitleStyled>
+                <ModalTitleStyled>Confirm Deletion
+                <IconButton
+                        edge="end"
+                        color="inherit"
+                        onClick={()=> setDeleteModalOpen(false)}
+                        aria-label="close"
+                        style={{ position: 'absolute', right: 15, top: 4 }}
+                    >
+                        <Close />
+                    </IconButton>
+                </ModalTitleStyled>
                 {loading && (
                     <LoaderOverlay>
                         <CircularProgress color="inherit" />
