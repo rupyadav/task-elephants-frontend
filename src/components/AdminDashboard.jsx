@@ -25,7 +25,8 @@ import { DataGrid } from '@mui/x-data-grid';
 import { Close, Refresh, Delete, Edit, Visibility, List } from '@material-ui/icons';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { BACKEND_SERVER } from '../constants';
+import { BACKEND_SERVER, STATUS } from '../constants';
+import DownloadFile from './DownloadFile';
 
 const FullPageDialog = styled(Dialog)({
     width: '100vw',
@@ -144,7 +145,7 @@ const LoaderOverlay = styled(Box)(({ theme }) => ({
     zIndex: 9999,
 }));
 
-const AdminDashboard = ({ open, onClose, userName }) => {
+const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
     const [clients, setClients] = useState([]);
     const [selectedClient, setSelectedClient] = useState(null);
     const [documentStatus, setDocumentStatus] = useState('');
@@ -160,6 +161,7 @@ const AdminDashboard = ({ open, onClose, userName }) => {
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [clientToDelete, setClientToDelete] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [docStatus, setDocStatus] = useState('');
 
     useEffect(() => {
             fetchClients();
@@ -168,7 +170,7 @@ const AdminDashboard = ({ open, onClose, userName }) => {
     const fetchClients = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${BACKEND_SERVER}/stag/api/users/getuserslist`,
+            const response = await fetch(`${BACKEND_SERVER}/stag/api/users/getuserslist/${role}`,
             {
                 method: 'GET',
                 headers: {
@@ -249,13 +251,15 @@ const AdminDashboard = ({ open, onClose, userName }) => {
     const handleDocumentStatusChange = async (documentId, status) => {
         setLoading(true);
         try {
-            await fetch(`${BACKEND_SERVER}/admin/updateDocumentStatus`, {
+            await fetch(`${BACKEND_SERVER}/stag/api/documents/updatedocumentstatus`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
-                body: JSON.stringify({ documentId, status }),
+                body: JSON.stringify({ 
+                    doc_id : documentId,
+                    doc_status : status }),
             });
             fetchClientDocuments(selectedClient.id);
         } catch (error) {
@@ -371,13 +375,14 @@ const AdminDashboard = ({ open, onClose, userName }) => {
             width: 150,
             renderCell: (params) => (
                 <Box display="flex" gap={1} justifyContent="center">
-                    {params.row.user_role === 'user' && (
+                    {params.row.user_role === 'client' && (
                         <Tooltip title="View Documents">
                             <IconButton color="success" onClick={() => handleClientSelect(params.row)}>
                                 <Visibility />
                             </IconButton>
                         </Tooltip>
                     )}
+                    {role === 'admin' && <>
                     <Tooltip title="Edit">
                         <IconButton color="primary" onClick={() => {
                             setSelectedClient(params.row);
@@ -399,6 +404,7 @@ const AdminDashboard = ({ open, onClose, userName }) => {
                             <Delete />
                         </IconButton>
                     </Tooltip>
+                    </>}
                 </Box>
             ),
         },
@@ -422,7 +428,7 @@ const AdminDashboard = ({ open, onClose, userName }) => {
     return (
         <FullPageDialog open={open} onClose={onClose} fullScreen>
             <TitleStyled>
-                Admin Dashboard for {userName}
+                Dashboard for {userName}
                 <LogoutButton onClick={() => handleLogout()}>
                     Logout
                 </LogoutButton>
@@ -440,9 +446,9 @@ const AdminDashboard = ({ open, onClose, userName }) => {
                                 Client List
                             </Typography>
                             <Box display="flex" alignItems="center" gap={2}>
-                                <CustomButton variant="contained" onClick={() => handleOnboardClientModal()}>
+                               {role === 'admin' && <CustomButton variant="contained" onClick={() => handleOnboardClientModal()}>
                                     Onboard New Client
-                                </CustomButton>
+                                </CustomButton>}
                                 <CustomButton
                                     variant="contained"
                                     startIcon={<Refresh />}
@@ -462,21 +468,28 @@ const AdminDashboard = ({ open, onClose, userName }) => {
                             />
                         </TableContainer>
                         </div>
-                        {selectedClient && selectedClient.user_role === 'user' && (
+                        {selectedClient && selectedClient.user_role === 'client' && (
                             <Box mt={4}>
                                 <Typography variant="h6" color="#000" fontWeight="bold" fontSize='14px'>Manage Documents for <span style={{ color: '#EE7501'}}>{selectedClient.name}</span></Typography>
                                 <div style={{ width: '80%', margin: 'auto'}}>
                                 <TableContainer component={Paper} sx={{ mt: 2 }}>
                                     <Table>
                                         <TableBody>
+                                        <TableRow>
+                                        <TableCell sx={{ fontSize: '14px'}}>File Name</TableCell>
+                                        <TableCell sx={{ fontSize: '14px'}}>File Status</TableCell>
+                                        <TableCell sx={{ fontSize: '14px'}}>View File</TableCell>
+                                        <TableCell sx={{ fontSize: '14px'}}>Update Status</TableCell>
+                                        </TableRow>
                                             {documents.map((doc) => (
                                                 <TableRow key={doc.id}>
                                                     <TableCell sx={{ fontSize: '12px'}}>
-                                                        <a href={doc.file_path} download>
-                                                            {(doc.file_path).split('/')[5]}
-                                                        </a>
+                                                        <p style={{fontSize: '12px'}}>
+                                                            {(doc.file_path).split('/')[2]}
+                                                        </p>
                                                     </TableCell>
-                                                    <TableCell sx={{ fontSize: '12px'}}>{doc.doc_status === 'in_review' ? 'In Review' : ''}</TableCell>
+                                                    <TableCell sx={{ fontSize: '12px'}}>{STATUS[doc.doc_status]}</TableCell>
+                                                    <TableCell><DownloadFile fileName={(doc.file_path).split('/')[2]} userID={doc.user_id} /></TableCell>
                                                     <TableCell>
                                                         <Select
                                                             value={doc.doc_status}
@@ -490,11 +503,11 @@ const AdminDashboard = ({ open, onClose, userName }) => {
                                                             <MenuItem value="incorrect">Incorrect</MenuItem>
                                                         </Select>
                                                     </TableCell>
-                                                    <TableCell>
-                                                        <CustomButton variant="contained" color="primary" onClick={() => handleDocumentStatusChange(doc.id, 'reupload')}>
+                                                    {/* <TableCell>
+                                                        <CustomButton variant="contained" color="primary" onClick={() => handleDocumentStatusChange(doc.id, docStatus)}>
                                                             Update Status
                                                         </CustomButton>
-                                                    </TableCell>
+                                                    </TableCell> */}
                                                 </TableRow>
                                             ))}
                                         </TableBody>
@@ -570,8 +583,9 @@ const AdminDashboard = ({ open, onClose, userName }) => {
                         value={clientRole}
                         onChange={(e) => setClientRole(e.target.value)}
                     >
-                        <MenuItem value="user">User</MenuItem>
+                        <MenuItem value="client">Client</MenuItem>
                         <MenuItem value="admin">Admin</MenuItem>
+                        <MenuItem value="accountant">Accountant</MenuItem>
                     </Select>
                     <Select
                         label="Client Status"
@@ -634,7 +648,7 @@ const AdminDashboard = ({ open, onClose, userName }) => {
                         value={clientRole}
                         onChange={(e) => setClientRole(e.target.value)}
                     >
-                        <MenuItem value="user">User</MenuItem>
+                        <MenuItem value="client">Client</MenuItem>
                         <MenuItem value="admin">Admin</MenuItem>
                     </Select>
                     <Select

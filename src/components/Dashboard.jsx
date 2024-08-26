@@ -5,8 +5,8 @@ import ClientDashboard from './ClientDashboard'
 function Dashboard({open, handleFullScreenModalClose, role, userName, userID}) {
   return (
     <>
-    {role === 'admin' && <AdminDashboard open={open} onClose={handleFullScreenModalClose} userName={userName}/>}
-    {role === 'user' && <ClientDashboard open={open} onClose={handleFullScreenModalClose} userName={userName} userID={userID}/>}
+    {(role === 'admin' || role === 'accountant') && <AdminDashboard open={open} onClose={handleFullScreenModalClose} userName={userName} userID={userID} role={role}/>}
+    {role === 'client' && <ClientDashboard open={open} onClose={handleFullScreenModalClose} userName={userName} userID={userID}/>}
     </>
   )
 }
