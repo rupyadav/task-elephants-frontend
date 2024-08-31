@@ -18,13 +18,15 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Close, Delete, Refresh } from '@material-ui/icons';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Dropzone from 'react-dropzone';
 import { v4 as uuidv4 } from 'uuid';
 import { BACKEND_SERVER, STATUS } from '../constants';
 import DateDisplay from './DateDisplay';
 import DownloadFile from './DownloadFile';
-import ReuploadDialog from './ReuploadDialog'; // Import the ReuploadDialog component
-import {getCurrentDateFormatted, convertDateFormat} from '../utils/dateUtils';
+import ReuploadDialog from './ReuploadDialog';
+import { getCurrentDateFormatted, convertDateFormat } from '../utils/dateUtils';
 
 const FullPageDialog = styled(Dialog)({
     width: '100vw',
@@ -134,7 +136,6 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
             fileType: doc.type,
             fileMonth: doc.fileMonth
         }));
-        console.log("documentList ", documentList);
         try {
             // Get presigned URLs for all documents
             const presignedUrls = await getPresignedUrls(userID, documentList);
@@ -149,9 +150,10 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
             await insertDocumentsToDB(userID, documentList);
 
             setDocuments([]);
-            alert('Documents successfully uploaded and are now In Review.');
+            toast.success('Documents successfully uploaded and are now In Review.');
             fetchUploadedDocuments();
         } catch (error) {
+            toast.error('Error uploading documents. Please try again.')
             console.error('Error uploading documents:', error);
         } finally {
             setLoading(false);
@@ -169,17 +171,16 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
             fileType: doc.type,
             docId: docId,
         }));
-        // const documentList = [{ fileName, fileType: file.type }];
         setLoading(true);
-
         try {
             const presignedUrls = await getReuploadPresignedUrls(userId, documentList);
             await uploadToS3(presignedUrls[0].presignedUrl, file);
             await updateDocumentsToDB(docId, userID, reuploadedFileName);
 
-            alert('File successfully reuploaded.');
+            toast.success('File successfully reuploaded.');
             fetchUploadedDocuments();
         } catch (error) {
+            toast.error('Error while reuploading document. Please try again.')
             console.error('Error reuploading document:', error);
         } finally {
             setLoading(false);
@@ -290,7 +291,7 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
-                body: JSON.stringify({ userId: '1063b599-949e-4058-9b33-0fc69ed457e9' }),
+                body: JSON.stringify({ userId: userID }),
             });
             const json_rec = await response.json();
             setReports(json_rec.data || []);
@@ -315,6 +316,7 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
                 </LogoutButton>
             </TitleStyled>
             <DialogContent>
+                <ToastContainer autoClose={3000} />
                 {loading && (
                     <LoaderOverlay>
                         <CircularProgress color="inherit" />
@@ -365,105 +367,109 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
                 </Box>
 
                 {uploadedDocs?.length > 0 && <Box>
-                <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} sx={{marginTop : '20px', marginBottom : '20px'}}>
-                <Typography variant="h6" color="#000" fontWeight="bold" sx={{ marginTop: '20px', marginBottom: '20px' }}>Documents Uploaded By You</Typography>
-                    <CustomButton
-                                    variant="contained"
-                                    startIcon={<Refresh />}
-                                    onClick={fetchUploadedDocuments}
-                                    color="primary"
-                                 />
-                        </Box>
-                    <TableContainer component={Paper}>
-                        <Table>
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell sx={{ fontSize: '14px' }}>File Name</TableCell>
-                                    <TableCell sx={{ fontSize: '14px' }}>File Status</TableCell>
-                                    <TableCell sx={{ fontSize: '14px' }}>View File</TableCell>
-                                    <TableCell sx={{ fontSize: '14px' }}>Updated Date</TableCell>
-                                    <TableCell sx={{ fontSize: '14px' }}>Remark</TableCell>
-                                    <TableCell sx={{ fontSize: '14px' }}>Action</TableCell>
-                                </TableRow>
-                                {uploadedDocs.map(doc => (
-                                    <TableRow key={doc.id}>
-                                        <TableCell>
-                                            <p style={{ fontSize: '12px' }}>
-                                                {(doc.file_path).split('/')[2]}
-                                            </p>
-                                        </TableCell>
-                                        <TableCell sx={{ fontSize: '12px' }}>{STATUS[doc.doc_status]}</TableCell>
-                                        <TableCell><DownloadFile fileName={(doc.file_path).split('/')[2]} userID={doc.user_id} /></TableCell>
-                                        <TableCell sx={{ fontSize: '12px' }}><DateDisplay isoString={doc.updated_ts} /></TableCell>
-                                        <TableCell>
-                                            <p style={{ fontSize: '12px' }}>
-                                                {doc.remarks}
-                                            </p>
-                                        </TableCell>
-                                        <TableCell>
-                                            {doc.doc_status === 'incorrect' && (
-                                                <Button 
-                                                variant="contained" 
-                                                style={{
-                                                    backgroundColor: 'EE7501',
-                                                    color: '#fff',
-                                                    '&:hover': {
-                                                        backgroundColor: '#d66000',
-                                                    }
-                                                }}
-                                                color="primary" 
-                                                onClick={() => handleReuploadClick(doc)}>
-                                                    Reupload
-                                                </Button>
-                                            )}
-                                        </TableCell>
+                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} sx={{ marginTop: '20px', marginBottom: '20px' }}>
+                        <Typography variant="h6" color="#000" fontWeight="bold" sx={{ marginTop: '20px', marginBottom: '20px' }}>Documents Uploaded By You</Typography>
+                        <CustomButton
+                            variant="contained"
+                            startIcon={<Refresh />}
+                            onClick={fetchUploadedDocuments}
+                            color="primary"
+                        />
+                    </Box>
+                    <div style={{ width: '80%', margin: 'auto' }}>
+                        <TableContainer component={Paper}>
+                            <Table>
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell sx={{ fontSize: '14px' }}>File Name</TableCell>
+                                        <TableCell sx={{ fontSize: '14px' }}>File Status</TableCell>
+                                        <TableCell sx={{ fontSize: '14px' }}>View File</TableCell>
+                                        <TableCell sx={{ fontSize: '14px' }}>Updated Date</TableCell>
+                                        <TableCell sx={{ fontSize: '14px' }}>Remark</TableCell>
+                                        <TableCell sx={{ fontSize: '14px' }}>Action</TableCell>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                                    {uploadedDocs.map(doc => (
+                                        <TableRow key={doc.id}>
+                                            <TableCell>
+                                                <p style={{ fontSize: '12px' }}>
+                                                    {(doc.file_path).split('/')[2]}
+                                                </p>
+                                            </TableCell>
+                                            <TableCell sx={{ fontSize: '12px' }}>{STATUS[doc.doc_status]}</TableCell>
+                                            <TableCell><DownloadFile fileName={(doc.file_path).split('/')[2]} userID={doc.user_id} /></TableCell>
+                                            <TableCell sx={{ fontSize: '12px' }}><DateDisplay isoString={doc.updated_ts} /></TableCell>
+                                            <TableCell>
+                                                <p style={{ fontSize: '12px' }}>
+                                                    {doc.remarks}
+                                                </p>
+                                            </TableCell>
+                                            <TableCell>
+                                                {doc.doc_status === 'incorrect' && (
+                                                    <Button
+                                                        variant="contained"
+                                                        style={{
+                                                            backgroundColor: 'EE7501',
+                                                            color: '#fff',
+                                                            '&:hover': {
+                                                                backgroundColor: '#d66000',
+                                                            }
+                                                        }}
+                                                        color="primary"
+                                                        onClick={() => handleReuploadClick(doc)}>
+                                                        Reupload
+                                                    </Button>
+                                                )}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </div>
                 </Box>}
 
                 {reports?.length > 0 && <Box>
-                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} sx={{marginTop : '20px', marginBottom : '20px'}}>
-                    <Typography variant="h6" color="#000" fontWeight="bold" sx={{ marginTop: '20px', marginBottom: '20px' }}>Generated Reports</Typography>
-                    <CustomButton
-                                    variant="contained"
-                                    startIcon={<Refresh />}
-                                    onClick={fetchReports}
-                                    color="primary"
-                                 />
-                        </Box>
-                    <TableContainer component={Paper}>
-                        <Table>
-                            <TableBody>
-                                <TableRow>
-                                    <TableCell sx={{ fontSize: '14px' }}>Report Name</TableCell>
-                                    {/* <TableCell sx={{ fontSize: '14px' }}>Report Month</TableCell> */}
-                                    <TableCell sx={{ fontSize: '14px' }}>Generated On</TableCell>
-                                    <TableCell sx={{ fontSize: '14px' }}>View</TableCell>
-                                    {/* <TableCell sx={{ fontSize: '14px' }}>Remark</TableCell> */}
-                                </TableRow>
-                                {reports.map(doc => (
-                                    <TableRow key={doc.id}>
-                                        <TableCell>
-                                            <p style={{ fontSize: '12px' }}>
-                                                {(doc.file_path).split('/')[3]}
-                                            </p>
-                                        </TableCell>
-                                        {/* <TableCell sx={{ fontSize: '12px' }}>{doc?.doc_month}</TableCell> */}
-                                        <TableCell sx={{ fontSize: '12px' }}><DateDisplay isoString={doc.updated_ts} /></TableCell>
-                                        <TableCell><DownloadFile fileName={(doc.file_path).split('/')[3]} userID={doc.user_id} /></TableCell>                            
-                                        {/* <TableCell>
+                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} sx={{ marginTop: '20px', marginBottom: '20px' }}>
+                        <Typography variant="h6" color="#000" fontWeight="bold" sx={{ marginTop: '20px', marginBottom: '20px' }}>Generated Reports</Typography>
+                        <CustomButton
+                            variant="contained"
+                            startIcon={<Refresh />}
+                            onClick={fetchReports}
+                            color="primary"
+                        />
+                    </Box>
+                    <div style={{ width: '80%', margin: 'auto' }}>
+                        <TableContainer component={Paper}>
+                            <Table>
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell sx={{ fontSize: '14px' }}>Report Name</TableCell>
+                                        {/* <TableCell sx={{ fontSize: '14px' }}>Report Month</TableCell> */}
+                                        <TableCell sx={{ fontSize: '14px' }}>Generated On</TableCell>
+                                        <TableCell sx={{ fontSize: '14px' }}>View</TableCell>
+                                        {/* <TableCell sx={{ fontSize: '14px' }}>Remark</TableCell> */}
+                                    </TableRow>
+                                    {reports.map(doc => (
+                                        <TableRow key={doc.id}>
+                                            <TableCell>
+                                                <p style={{ fontSize: '12px' }}>
+                                                    {(doc.file_path).split('/')[3]}
+                                                </p>
+                                            </TableCell>
+                                            {/* <TableCell sx={{ fontSize: '12px' }}>{doc?.doc_month}</TableCell> */}
+                                            <TableCell sx={{ fontSize: '12px' }}><DateDisplay isoString={doc.updated_ts} /></TableCell>
+                                            <TableCell><DownloadFile fileName={(doc.file_path).split('/')[3]} userID={doc.user_id} /></TableCell>
+                                            {/* <TableCell>
                                             <p style={{ fontSize: '12px' }}>
                                                 {doc.remarks}
                                             </p>
                                         </TableCell> */}
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </div>
                 </Box>}
             </DialogContent>
 

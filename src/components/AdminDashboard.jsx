@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     Dialog,
     DialogTitle,
@@ -44,7 +44,7 @@ const TitleStyled = styled(DialogTitle)(({ theme }) => ({
     fontWeight: 'bold',
     fontSize: '20px',
     backgroundColor: '#E4DDD8',
-    fontFamily:'Georgia, serif'
+    fontFamily: 'Georgia, serif'
 }));
 
 const ModalTitleStyled = styled(DialogTitle)(({ theme }) => ({
@@ -53,8 +53,8 @@ const ModalTitleStyled = styled(DialogTitle)(({ theme }) => ({
     fontWeight: 'bold',
     fontSize: '1.5rem',
     backgroundColor: '#E4DDD8',
-    marginBottom : '20px',
-    fontFamily:'Georgia, serif'
+    marginBottom: '20px',
+    fontFamily: 'Georgia, serif'
 }));
 
 const SubmitButton = styled(Button)(({ theme }) => ({
@@ -70,7 +70,7 @@ const SubmitButton = styled(Button)(({ theme }) => ({
     width: '150px',
 }));
 
-const CustomButton = styled(Button)(({ theme }) =>({
+const CustomButton = styled(Button)(({ theme }) => ({
     backgroundColor: '#EE7501',
     fontSize: '12px',
     color: '#fff',
@@ -168,22 +168,24 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
     const [documentIdToUpdate, setDocumentIdToUpdate] = useState(null);
     const [remark, setRemark] = useState('');
     const [oldStatus, setOldStatus] = useState('');
+    const [reports, setReports] = useState([]);
+    const fileInputRef = useRef(null);
 
     useEffect(() => {
-            fetchClients();
+        fetchClients();
     }, []);
 
     const fetchClients = async () => {
         setLoading(true);
         try {
             const response = await fetch(`${BACKEND_SERVER}/stag/api/users/getuserslist/${role}`,
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                }
-            });
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    }
+                });
             const res = await response.json();
             setClients(res.data || []);
         } catch (error) {
@@ -193,9 +195,30 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
         }
     };
 
+    const fetchReports = async (clientId) => {
+        setLoading(true);
+        try {
+            const response = await fetch(`${BACKEND_SERVER}/stag/api/reports/getreportlist`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+                body: JSON.stringify({ userId: clientId }),
+            });
+            const json_rec = await response.json();
+            setReports(json_rec.data || []);
+        } catch (error) {
+            console.error('Failed to fetch Reports:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleClientSelect = async (client) => {
         setSelectedClient(client);
         fetchClientDocuments(client.id);
+        fetchReports(client.id);
     };
 
     const fetchClientDocuments = async (userId) => {
@@ -207,7 +230,7 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
-                body: JSON.stringify({ userId : userId }),
+                body: JSON.stringify({ userId: userId }),
             });
             const json_res = await response.json();
             setDocuments(json_res.data || []);
@@ -245,35 +268,16 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                 setOnboardModalOpen(false);
                 toast.success("Client Onboarded Successfully!");
             } else {
+                toast.error('Failed to onboard client. Please try again.')
                 console.error('Failed to onboard client.');
             }
         } catch (error) {
+            toast.error('Something went wrong. Please try again later.')
             console.error('Failed to onboard client:', error);
         } finally {
             setLoading(false);
         }
     };
-
-    // const handleDocumentStatusChange = async (documentId, status) => {
-    //     setLoading(true);
-    //     try {
-    //         await fetch(`${BACKEND_SERVER}/stag/api/documents/updatedocumentstatus`, {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    //             },
-    //             body: JSON.stringify({ 
-    //                 doc_id : documentId,
-    //                 doc_status : status }),
-    //         });
-    //         fetchClientDocuments(selectedClient.id);
-    //     } catch (error) {
-    //         console.error('Failed to update document status:', error);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
 
     const handleDocumentStatusChange = (documentId, status, currentStatus) => {
         setNewStatus(status);
@@ -295,20 +299,24 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
     const updateDocumentStatus = async () => {
         setLoading(true);
         try {
-            await fetch(`${BACKEND_SERVER}/stag/api/documents/updatedocumentstatus`, {
+            const res = await fetch(`${BACKEND_SERVER}/stag/api/documents/updatedocumentstatus`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
-                body: JSON.stringify({ 
+                body: JSON.stringify({
                     doc_id: documentIdToUpdate,
                     doc_status: newStatus,
                     remarks: newStatus === 'incorrect' ? remark : '', // Include remark if the status is "incorrect"
                 }),
             });
-            fetchClientDocuments(selectedClient.id);
+            if (res.ok) {
+                toast.success('Document Status updated successfully');
+                fetchClientDocuments(selectedClient.id);
+            }
         } catch (error) {
+            toast.error('Failed to update document status. Please try again.');
             console.error('Failed to update document status:', error);
         } finally {
             setLoading(false);
@@ -317,29 +325,30 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
     };
 
 
-    const handleReportUpload = async () => {
-        setLoading(true);
-        const formData = new FormData();
-        formData.append('clientId', selectedClient.id);
-        formData.append('report', newReport);
+    // const handleReportUpload = async () => {
+    //     setLoading(true);
+    //     const formData = new FormData();
+    //     formData.append('clientId', selectedClient.id);
+    //     formData.append('report', newReport);
+    //     console.log("newReport ", newReport.type);
 
-        try {
-            const response = await fetch(`${BACKEND_SERVER}/admin/uploadReport`, {
-                method: 'POST',
-                body: formData,
-            });
-            if (response.ok) {
-                alert('Report uploaded successfully');
-                setNewReport(null);
-            } else {
-                console.error('Failed to upload report.');
-            }
-        } catch (error) {
-            console.error('Failed to upload report:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    //     try {
+    //         const response = await fetch(`${BACKEND_SERVER}/admin/uploadReport`, {
+    //             method: 'POST',
+    //             body: formData,
+    //         });
+    //         if (response.ok) {
+    //             alert('Report uploaded successfully');
+    //             setNewReport(null);
+    //         } else {
+    //             console.error('Failed to upload report.');
+    //         }
+    //     } catch (error) {
+    //         console.error('Failed to upload report:', error);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
     const handleUpdateClient = async () => {
         setLoading(true);
@@ -359,9 +368,11 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                 }),
             });
             if (response.ok) {
+                toast.success('Successfully Updated the changes.');
                 fetchClients();
                 setUpdateModalOpen(false);
             } else {
+                toast.error('Failed to update details. Please try again.');
                 console.error('Failed to update client.');
             }
         } catch (error) {
@@ -382,9 +393,11 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                 },
             });
             if (response.ok) {
+                toast.success('User deleted successfully.')
                 fetchClients();
                 setDeleteModalOpen(false);
             } else {
+                toast.error('Failed to delete the user. Please try again.')
                 console.error('Failed to delete client.');
             }
         } catch (error) {
@@ -408,7 +421,7 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                     style={{
                         backgroundColor: params.value === 'active' ? '#4CAF50' : '#BDBDBD',
                         color: '#fff',
-                        marginTop : '10px',
+                        marginTop: '10px',
                         cursor: 'default', // Ensure the cursor stays default
                         pointerEvents: 'none', // Prevent any interaction
                     }}
@@ -431,33 +444,33 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                         </Tooltip>
                     )}
                     {role === 'admin' && <>
-                    <Tooltip title="Edit">
-                        <IconButton color="primary" onClick={() => {
-                            setSelectedClient(params.row);
-                            setClientName(params.row.name);
-                            setClientEmail(params.row.email);
-                            setClientRole(params.row.user_role);
-                            setClientStatus(params.row.status);
-                            handleClientSelect(params.row);
-                            setUpdateModalOpen(true);
-                        }}>
-                            <Edit />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Delete">
-                        <IconButton color="error" onClick={() => {
-                            setClientToDelete(params.row);
-                            setDeleteModalOpen(true);
-                        }}>
-                            <Delete />
-                        </IconButton>
-                    </Tooltip>
+                        <Tooltip title="Edit">
+                            <IconButton color="primary" onClick={() => {
+                                setSelectedClient(params.row);
+                                setClientName(params.row.name);
+                                setClientEmail(params.row.email);
+                                setClientRole(params.row.user_role);
+                                setClientStatus(params.row.status);
+                                handleClientSelect(params.row);
+                                setUpdateModalOpen(true);
+                            }}>
+                                <Edit />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete">
+                            <IconButton color="error" onClick={() => {
+                                setClientToDelete(params.row);
+                                setDeleteModalOpen(true);
+                            }}>
+                                <Delete />
+                            </IconButton>
+                        </Tooltip>
                     </>}
                 </Box>
             ),
         },
     ];
-    
+
 
     const handleOnboardClientModal = () => {
         setClientName('');
@@ -472,6 +485,75 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
         localStorage.removeItem('token');
         onClose();
     }
+
+    // Handle Report Upload Section 
+
+    const handleReportUpload = async () => {
+        const documentList = [{
+            fileName: newReport.name,
+            fileType: newReport.type
+        }];
+
+        setLoading(true);
+
+        try {
+            const presignedUrls = await getPresignedUrls(selectedClient.id, documentList);
+            await uploadToS3(presignedUrls[0].presignedUrl, newReport);
+            await insertReportToDb(selectedClient.id, documentList);
+
+            toast.success('Report successfully uploaded.');
+            setNewReport(null);
+            if (fileInputRef.current) {
+                fileInputRef.current.value = ''; // Clear the file input value
+            }
+            fetchReports(selectedClient.id);
+        } catch (error) {
+            toast.error('Error uploading reports. Please try again.');
+            console.error('Error uploading reports:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const getPresignedUrls = async (userID, documentList) => {
+        const response = await fetch(`${BACKEND_SERVER}/stag/api/reports/getuploadpresignedurl`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: JSON.stringify({
+                userId: userID,
+                documentList: documentList
+            }),
+        });
+        const res_json = await response.json();
+        return res_json.data;
+    };
+
+    const uploadToS3 = async (url, file) => {
+        await fetch(url, {
+            method: 'PUT',
+            body: file,
+            headers: {
+                'Content-Type': file.type,
+            },
+        });
+    };
+
+    const insertReportToDb = async (userID, documentList) => {
+        await fetch(`${BACKEND_SERVER}/stag/api/reports/insertreportrecord`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: JSON.stringify({
+                userId: userID,
+                documentList: documentList,
+            }),
+        });
+    };
 
     return (
         <FullPageDialog open={open} onClose={onClose} fullScreen>
@@ -488,24 +570,24 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                         <CircularProgress color="inherit" />
                     </LoaderOverlay>
                 )}
-                    <Box>
-                        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} sx={{marginTop : '20px', marginBottom : '20px'}}>
-                            <Typography variant="h6" color="#000" fontWeight="bold" fontSize='14px' >
-                                Client List
-                            </Typography>
-                            <Box display="flex" alignItems="center" gap={2}>
-                               {role === 'admin' && <CustomButton variant="contained" onClick={() => handleOnboardClientModal()}>
-                                    Onboard New Client
-                                </CustomButton>}
-                                <CustomButton
-                                    variant="contained"
-                                    startIcon={<Refresh />}
-                                    onClick={fetchClients}
-                                    color="primary"
-                                 />
-                            </Box>
+                <Box>
+                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} sx={{ marginTop: '20px', marginBottom: '20px' }}>
+                        <Typography variant="h6" color="#000" fontWeight="bold" fontSize='14px' >
+                            Client List
+                        </Typography>
+                        <Box display="flex" alignItems="center" gap={2}>
+                            {role === 'admin' && <CustomButton variant="contained" onClick={() => handleOnboardClientModal()}>
+                                Onboard New Client
+                            </CustomButton>}
+                            <CustomButton
+                                variant="contained"
+                                startIcon={<Refresh />}
+                                onClick={fetchClients}
+                                color="primary"
+                            />
                         </Box>
-                        <div style={{ width: '80%', margin: 'auto'}}>
+                    </Box>
+                    <div style={{ width: '80%', margin: 'auto' }}>
                         <TableContainer component={Paper}>
                             <DataGridStyled
                                 rows={clients}
@@ -515,36 +597,36 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                                 autoHeight
                             />
                         </TableContainer>
-                        </div>
-                        {selectedClient && selectedClient.user_role === 'client' && (
-                            <Box mt={4}>
-                                <Typography variant="h6" color="#000" fontWeight="bold" fontSize='14px'>Manage Documents for <span style={{ color: '#EE7501'}}>{selectedClient.name}</span></Typography>
-                                <div style={{ width: '80%', margin: 'auto'}}>
+                    </div>
+                    {selectedClient && selectedClient.user_role === 'client' && (
+                        <Box mt={4}>
+                            <Typography variant="h6" color="#000" fontWeight="bold" fontSize='14px'>Manage Documents for <span style={{ color: '#EE7501' }}>{selectedClient.name}</span></Typography>
+                            <div style={{ width: '80%', margin: 'auto' }}>
                                 <TableContainer component={Paper} sx={{ mt: 2 }}>
                                     <Table>
                                         <TableBody>
-                                        <TableRow>
-                                        <TableCell sx={{ fontSize: '14px'}}>File Name</TableCell>
-                                        <TableCell sx={{ fontSize: '14px'}}>File Status</TableCell>
-                                        <TableCell sx={{ fontSize: '14px'}}>View File</TableCell>
-                                        <TableCell sx={{ fontSize: '14px'}}>Updated Date</TableCell>
-                                        <TableCell sx={{ fontSize: '14px'}}>Update Status</TableCell>
-                                        <TableCell sx={{ fontSize: '14px'}}>Remarks</TableCell>
-                                        </TableRow>
+                                            <TableRow>
+                                                <TableCell sx={{ fontSize: '14px' }}>File Name</TableCell>
+                                                <TableCell sx={{ fontSize: '14px' }}>File Status</TableCell>
+                                                <TableCell sx={{ fontSize: '14px' }}>View File</TableCell>
+                                                <TableCell sx={{ fontSize: '14px' }}>Updated Date</TableCell>
+                                                <TableCell sx={{ fontSize: '14px' }}>Update Status</TableCell>
+                                                <TableCell sx={{ fontSize: '14px' }}>Remarks</TableCell>
+                                            </TableRow>
                                             {documents.map((doc) => (
                                                 <TableRow key={doc.id}>
-                                                    <TableCell sx={{ fontSize: '12px'}}>
-                                                        <p style={{fontSize: '12px'}}>
+                                                    <TableCell sx={{ fontSize: '12px' }}>
+                                                        <p style={{ fontSize: '12px' }}>
                                                             {(doc.file_path).split('/')[2]}
                                                         </p>
                                                     </TableCell>
-                                                    <TableCell sx={{ fontSize: '12px'}}>{STATUS[doc.doc_status]}</TableCell>
+                                                    <TableCell sx={{ fontSize: '12px' }}>{STATUS[doc.doc_status]}</TableCell>
                                                     <TableCell><DownloadFile fileName={(doc.file_path).split('/')[2]} userID={doc.user_id} /></TableCell>
                                                     <TableCell sx={{ fontSize: '12px' }}><DateDisplay isoString={doc.updated_ts} /></TableCell>
                                                     <TableCell>
                                                         <Select
                                                             value={doc.doc_status}
-                                                            sx={{ fontSize: '12px'}}
+                                                            sx={{ fontSize: '12px' }}
                                                             onChange={(e) => handleDocumentStatusChange(doc.id, e.target.value)}
                                                         >
                                                             <MenuItem value="in_review">In Review</MenuItem>
@@ -554,8 +636,8 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                                                             <MenuItem value="incorrect">Incorrect</MenuItem>
                                                         </Select>
                                                     </TableCell>
-                                                    <TableCell sx={{ fontSize: '12px'}}>
-                                                        <p style={{fontSize: '12px'}}>
+                                                    <TableCell sx={{ fontSize: '12px' }}>
+                                                        <p style={{ fontSize: '12px' }}>
                                                             {doc.remarks}
                                                         </p>
                                                     </TableCell>
@@ -564,34 +646,70 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
-                                </div>
-                                <Box mt={4}>
-                                    <Typography variant="h6" color="#000" fontWeight="bold" fontSize='14px'>Upload Report for {selectedClient.name}</Typography>
-                                    <div style={{ width: '80%', paddingLeft: '40%'}}>
+                            </div>
+                            <Box mt={4}>
+                                <Typography variant="h6" color="#000" fontWeight="bold" fontSize='14px'>Upload Report for {selectedClient.name}</Typography>
+                                <div style={{ width: '80%', paddingLeft: '40%' }}>
                                     <input
                                         type="file"
+                                        ref={fileInputRef}
                                         onChange={(e) => setNewReport(e.target.files[0])}
                                         style={{ display: 'block', margin: '10px 0' }}
                                     />
-                                    </div>
-                                    <div style={{ width: '80%', paddingLeft: '40%', paddingBottom : '20px'}}>
+                                </div>
+                                <div style={{ width: '80%', paddingLeft: '40%', paddingBottom: '20px' }}>
                                     <CustomButton variant="contained" color="primary" onClick={handleReportUpload}>
                                         Upload Report
                                     </CustomButton>
-                                    </div>
-                                </Box>
+                                </div>
                             </Box>
-                        )}
-                    </Box>
+                        </Box>
+                    )}
+                </Box>
+                {reports?.length > 0 && <Box>
+                    <Typography variant="h6" color="#000" fontWeight="bold" fontSize='14px' sx={{ marginTop: '20px', marginBottom: '20px' }}>Uploaded Reports</Typography>
+                    <div style={{ width: '80%', margin: 'auto' }}>
+                        <TableContainer component={Paper}>
+                            <Table>
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell sx={{ fontSize: '14px' }}>Report Name</TableCell>
+                                        {/* <TableCell sx={{ fontSize: '14px' }}>Report Month</TableCell> */}
+                                        <TableCell sx={{ fontSize: '14px' }}>Generated On</TableCell>
+                                        <TableCell sx={{ fontSize: '14px' }}>View</TableCell>
+                                        {/* <TableCell sx={{ fontSize: '14px' }}>Remark</TableCell> */}
+                                    </TableRow>
+                                    {reports.map(doc => (
+                                        <TableRow key={doc.id}>
+                                            <TableCell>
+                                                <p style={{ fontSize: '12px' }}>
+                                                    {(doc.file_path).split('/')[3]}
+                                                </p>
+                                            </TableCell>
+                                            {/* <TableCell sx={{ fontSize: '12px' }}>{doc?.doc_month}</TableCell> */}
+                                            <TableCell sx={{ fontSize: '12px' }}><DateDisplay isoString={doc.updated_ts} /></TableCell>
+                                            <TableCell><DownloadFile fileName={(doc.file_path).split('/')[3]} userID={doc.user_id} /></TableCell>
+                                            {/* <TableCell>
+                                            <p style={{ fontSize: '12px' }}>
+                                                {doc.remarks}
+                                            </p>
+                                        </TableCell> */}
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </div>
+                </Box>}
             </DialogContent>
 
             {/* Onboard Client Modal */}
             <Dialog open={onboardModalOpen} onClose={() => setOnboardModalOpen(false)} maxWidth="sm" fullWidth>
                 <ModalTitleStyled>Onboard New Client
-                <IconButton
+                    <IconButton
                         edge="end"
                         color="inherit"
-                        onClick={()=> setOnboardModalOpen(false)}
+                        onClick={() => setOnboardModalOpen(false)}
                         aria-label="close"
                         style={{ position: 'absolute', right: 15, top: 4 }}
                     >
@@ -661,10 +779,10 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
             {/* Update Client Modal */}
             <Dialog open={updateModalOpen} onClose={() => setUpdateModalOpen(false)} maxWidth="sm" fullWidth>
                 <ModalTitleStyled>Update Client Details
-                <IconButton
+                    <IconButton
                         edge="end"
                         color="inherit"
-                        onClick={()=> setUpdateModalOpen(false)}
+                        onClick={() => setUpdateModalOpen(false)}
                         aria-label="close"
                         style={{ position: 'absolute', right: 15, top: 4 }}
                     >
@@ -722,51 +840,51 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                 </DialogActions>
             </Dialog>
 
-             {/* Status Change Confirmation Dialog */}
-             <Dialog open={statusChangeDialogOpen} onClose={() => setStatusChangeDialogOpen(false)}>
-                    <ModalTitleStyled>Confirm Status Change</ModalTitleStyled>
-                    <DialogContent>
-                        <Typography>
-                            You are changing the status to <b>{STATUS[newStatus]}</b>. Are you sure you want to do that?
-                        </Typography>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={() => setStatusChangeDialogOpen(false)} color="primary">No</Button>
-                        <Button onClick={handleConfirmStatusChange} color="secondary">Yes</Button>
-                    </DialogActions>
-                </Dialog>
+            {/* Status Change Confirmation Dialog */}
+            <Dialog open={statusChangeDialogOpen} onClose={() => setStatusChangeDialogOpen(false)}>
+                <ModalTitleStyled>Confirm Status Change</ModalTitleStyled>
+                <DialogContent>
+                    <Typography>
+                        You are changing the status to <b>{STATUS[newStatus]}</b>. Are you sure you want to do that?
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setStatusChangeDialogOpen(false)} color="primary">No</Button>
+                    <Button onClick={handleConfirmStatusChange} color="secondary">Yes</Button>
+                </DialogActions>
+            </Dialog>
 
-                {/* Remark Input Dialog */}
-                <Dialog open={remarkDialogOpen} onClose={() => setRemarkDialogOpen(false)}>
-                    <ModalTitleStyled>Provide Remark</ModalTitleStyled>
-                    <DialogContent>
-                        <Typography>
-                            Please provide a remark for changing the status to "Incorrect".
-                        </Typography>
-                        <TextField
-                            label="Remark"
-                            variant="outlined"
-                            fullWidth
-                            value={remark}
-                            onChange={(e) => setRemark(e.target.value)}
-                            multiline
-                            rows={4}
-                            sx={{ marginTop: '16px' }}
-                        />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={() => setRemarkDialogOpen(false)} color="primary">Cancel</Button>
-                        <Button onClick={updateDocumentStatus} color="secondary">{loading ? 'Submitting...' : 'Submit'}</Button>
-                    </DialogActions>
-                </Dialog>
-       
+            {/* Remark Input Dialog */}
+            <Dialog open={remarkDialogOpen} onClose={() => setRemarkDialogOpen(false)}>
+                <ModalTitleStyled>Provide Remark</ModalTitleStyled>
+                <DialogContent>
+                    <Typography>
+                        Please provide a remark for changing the status to "Incorrect".
+                    </Typography>
+                    <TextField
+                        label="Remark"
+                        variant="outlined"
+                        fullWidth
+                        value={remark}
+                        onChange={(e) => setRemark(e.target.value)}
+                        multiline
+                        rows={4}
+                        sx={{ marginTop: '16px' }}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setRemarkDialogOpen(false)} color="primary">Cancel</Button>
+                    <Button onClick={updateDocumentStatus} color="secondary">{loading ? 'Submitting...' : 'Submit'}</Button>
+                </DialogActions>
+            </Dialog>
+
             {/* Delete Confirmation Modal */}
             <Dialog open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)} maxWidth="sm" fullWidth>
                 <ModalTitleStyled>Confirm Deletion
-                <IconButton
+                    <IconButton
                         edge="end"
                         color="inherit"
-                        onClick={()=> setDeleteModalOpen(false)}
+                        onClick={() => setDeleteModalOpen(false)}
                         aria-label="close"
                         style={{ position: 'absolute', right: 15, top: 4 }}
                     >
