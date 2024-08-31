@@ -51,7 +51,7 @@ const DownloadFile = ({ fileName, userID }) => {
     const downloadFile = (presignedUrl) => {
         const link = document.createElement('a');
         link.href = presignedUrl;
-        link.target= "_blank";
+        link.target = "_blank";
         link.setAttribute('download', fileName || 'download');
         document.body.appendChild(link);
         link.click();
@@ -60,12 +60,21 @@ const DownloadFile = ({ fileName, userID }) => {
 
     return (
         <div>
-            <CustomButton variant="contained" color="primary" disabled={loading} onClick={fetchPresignedUrl}>
+            {/* <CustomButton variant="contained" color="primary" disabled={loading} onClick={fetchPresignedUrl}>
                 {loading ? 'Downloading...' : 'Download File'}
-            </CustomButton>
-            {/* <button onClick={fetchPresignedUrl} disabled={loading}>
-                {loading ? 'Downloading...' : 'Download File'}
-            </button> */}
+            </CustomButton> */}
+            <Button
+                variant="contained"
+                style={{
+                    backgroundColor: 'EE7501',
+                    color: '#fff',
+                    '&:hover': {
+                        backgroundColor: '#d66000',
+                    }
+                }}
+            >
+                {loading ? 'Downloading...' : 'Download'}
+            </Button>
         </div>
     );
 };

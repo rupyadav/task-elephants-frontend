@@ -17,12 +17,14 @@ import {
     CircularProgress,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Close, Delete } from '@material-ui/icons';
+import { Close, Delete, Refresh } from '@material-ui/icons';
 import Dropzone from 'react-dropzone';
 import { v4 as uuidv4 } from 'uuid';
 import { BACKEND_SERVER, STATUS } from '../constants';
 import DateDisplay from './DateDisplay';
 import DownloadFile from './DownloadFile';
+import ReuploadDialog from './ReuploadDialog'; // Import the ReuploadDialog component
+import {getCurrentDateFormatted, convertDateFormat} from '../utils/dateUtils';
 
 const FullPageDialog = styled(Dialog)({
     width: '100vw',
@@ -99,10 +101,14 @@ const LoaderOverlay = styled(Box)(({ theme }) => ({
 const ClientDashboard = ({ open, onClose, userName, userID }) => {
     const [documents, setDocuments] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [inReviewDocs, setInReviewDocs] = useState([]);
+    const [uploadedDocs, setUploadedDocs] = useState([]);
+    const [reports, setReports] = useState([]);
+    const [reuploadDialogOpen, setReuploadDialogOpen] = useState(false); // State to control ReuploadDialog
+    const [selectedDoc, setSelectedDoc] = useState(null); // State to store selected document for reupload
 
     useEffect(() => {
-        fetchInReviewDocuments();
+        fetchUploadedDocuments();
+        fetchReports();
     }, []);
 
     const handleDrop = (acceptedFiles) => {
@@ -111,8 +117,8 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
             file,
             name: file.name,
             type: file.type,
+            fileMonth: getCurrentDateFormatted(),
         }));
-        console.log("newDocs ", newDocs);
         setDocuments(prevDocs => [...prevDocs, ...newDocs]);
     };
 
@@ -126,13 +132,12 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
         const documentList = documents.map(doc => ({
             fileName: doc.name,
             fileType: doc.type,
+            fileMonth: doc.fileMonth
         }));
         console.log("documentList ", documentList);
         try {
             // Get presigned URLs for all documents
             const presignedUrls = await getPresignedUrls(userID, documentList);
-            // const presignedUrls = await res.json();
-            console.log("presignedUrls ", presignedUrls);
             // Upload each file to S3 using the corresponding presigned URL
             const uploadPromises = presignedUrls?.map((urlObj, index) =>
                 uploadToS3(urlObj.presignedUrl, documents[index].file)
@@ -145,7 +150,7 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
 
             setDocuments([]);
             alert('Documents successfully uploaded and are now In Review.');
-            fetchInReviewDocuments();
+            fetchUploadedDocuments();
         } catch (error) {
             console.error('Error uploading documents:', error);
         } finally {
@@ -153,8 +158,36 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
         }
     };
 
+    const handleReuploadClick = (doc) => {
+        setSelectedDoc(doc);
+        setReuploadDialogOpen(true);
+    };
+
+    const handleReupload = async (userId, docId, file, reuploadedFileName) => {
+        const documentList = file.map(doc => ({
+            fileName: doc.name,
+            fileType: doc.type,
+            docId: docId,
+        }));
+        // const documentList = [{ fileName, fileType: file.type }];
+        setLoading(true);
+
+        try {
+            const presignedUrls = await getReuploadPresignedUrls(userId, documentList);
+            await uploadToS3(presignedUrls[0].presignedUrl, file);
+            await updateDocumentsToDB(docId, userID, reuploadedFileName);
+
+            alert('File successfully reuploaded.');
+            fetchUploadedDocuments();
+        } catch (error) {
+            console.error('Error reuploading document:', error);
+        } finally {
+            setLoading(false);
+            setReuploadDialogOpen(false);
+        }
+    };
+
     const getPresignedUrls = async (userID, documentList) => {
-        console.log("userID ", userID);
         const response = await fetch(`${BACKEND_SERVER}/stag/api/documents/getuploadpresignedurl`, {
             method: 'POST',
             headers: {
@@ -167,11 +200,26 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
             }),
         });
         const res_json = await response.json();
-        return res_json.data; // Assuming the API returns an array of presigned URLs
+        return res_json.data;
+    };
+
+    const getReuploadPresignedUrls = async (userID, documentList) => {
+        const response = await fetch(`${BACKEND_SERVER}/stag/api/documents/getreuploadpresignedurl`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: JSON.stringify({
+                userId: userID,
+                documentList: documentList,
+            }),
+        });
+        const res_json = await response.json();
+        return res_json.data;
     };
 
     const uploadToS3 = async (url, file) => {
-        console.log("url, file ", url, file)
         await fetch(url, {
             method: 'PUT',
             body: file,
@@ -195,7 +243,25 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
         });
     };
 
-    const fetchInReviewDocuments = async () => {
+    const updateDocumentsToDB = async (docId, userID, reuploadedFileName) => {
+        await fetch(`${BACKEND_SERVER}/stag/api/documents/updatereuploadrecord`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: JSON.stringify({
+                docId: docId,
+                userId: userID,
+                fileName: reuploadedFileName,
+                docStatus: "in_review",
+                remarks: "Reuploaded",
+                fileMonth: getCurrentDateFormatted(),
+            }),
+        });
+    };
+
+    const fetchUploadedDocuments = async () => {
         setLoading(true);
         try {
             const response = await fetch(`${BACKEND_SERVER}/stag/api/documents/getdocumentslist`, {
@@ -207,9 +273,29 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
                 body: JSON.stringify({ userId: userID }),
             });
             const json_rec = await response.json();
-            setInReviewDocs(json_rec.data || []);
+            setUploadedDocs(json_rec.data || []);
         } catch (error) {
             console.error('Failed to fetch documents:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchReports = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(`${BACKEND_SERVER}/stag/api/reports/getreportlist`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+                body: JSON.stringify({ userId: '1063b599-949e-4058-9b33-0fc69ed457e9' }),
+            });
+            const json_rec = await response.json();
+            setReports(json_rec.data || []);
+        } catch (error) {
+            console.error('Failed to fetch Reports:', error);
         } finally {
             setLoading(false);
         }
@@ -218,11 +304,7 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
     const handleLogout = () => {
         localStorage.removeItem('token');
         onClose();
-    }
-
-    const handleReupload = (userId, fileName) => {
-        return false;
-    }
+    };
 
     return (
         <FullPageDialog open={open} onClose={onClose} fullScreen>
@@ -282,19 +364,28 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
                     )}
                 </Box>
 
-                <Box>
-                    {inReviewDocs?.length > 0 && <Typography variant="h6" color="#000" fontWeight="bold" sx={{ marginTop: '20px', marginBottom: '20px' }}>Documents Uploaded By You</Typography>}
+                {uploadedDocs?.length > 0 && <Box>
+                <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} sx={{marginTop : '20px', marginBottom : '20px'}}>
+                <Typography variant="h6" color="#000" fontWeight="bold" sx={{ marginTop: '20px', marginBottom: '20px' }}>Documents Uploaded By You</Typography>
+                    <CustomButton
+                                    variant="contained"
+                                    startIcon={<Refresh />}
+                                    onClick={fetchUploadedDocuments}
+                                    color="primary"
+                                 />
+                        </Box>
                     <TableContainer component={Paper}>
                         <Table>
                             <TableBody>
-                            <TableRow>
-                                        <TableCell sx={{ fontSize: '14px'}}>File Name</TableCell>
-                                        <TableCell sx={{ fontSize: '14px'}}>File Status</TableCell>
-                                        <TableCell sx={{ fontSize: '14px'}}>View File</TableCell>
-                                        <TableCell sx={{ fontSize: '14px'}}>Updated Date</TableCell>
-                                        <TableCell sx={{ fontSize: '14px'}}>Remark</TableCell>
-                                        </TableRow>
-                                {inReviewDocs.map(doc => (
+                                <TableRow>
+                                    <TableCell sx={{ fontSize: '14px' }}>File Name</TableCell>
+                                    <TableCell sx={{ fontSize: '14px' }}>File Status</TableCell>
+                                    <TableCell sx={{ fontSize: '14px' }}>View File</TableCell>
+                                    <TableCell sx={{ fontSize: '14px' }}>Updated Date</TableCell>
+                                    <TableCell sx={{ fontSize: '14px' }}>Remark</TableCell>
+                                    <TableCell sx={{ fontSize: '14px' }}>Action</TableCell>
+                                </TableRow>
+                                {uploadedDocs.map(doc => (
                                     <TableRow key={doc.id}>
                                         <TableCell>
                                             <p style={{ fontSize: '12px' }}>
@@ -305,10 +396,25 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
                                         <TableCell><DownloadFile fileName={(doc.file_path).split('/')[2]} userID={doc.user_id} /></TableCell>
                                         <TableCell sx={{ fontSize: '12px' }}><DateDisplay isoString={doc.updated_ts} /></TableCell>
                                         <TableCell>
+                                            <p style={{ fontSize: '12px' }}>
+                                                {doc.remarks}
+                                            </p>
+                                        </TableCell>
+                                        <TableCell>
                                             {doc.doc_status === 'incorrect' && (
-                                                <CustomButton variant="contained" color="primary" onClick={() => handleReupload(doc.user_id, (doc.file_path).split('/')[2])}>
+                                                <Button 
+                                                variant="contained" 
+                                                style={{
+                                                    backgroundColor: 'EE7501',
+                                                    color: '#fff',
+                                                    '&:hover': {
+                                                        backgroundColor: '#d66000',
+                                                    }
+                                                }}
+                                                color="primary" 
+                                                onClick={() => handleReuploadClick(doc)}>
                                                     Reupload
-                                                </CustomButton>
+                                                </Button>
                                             )}
                                         </TableCell>
                                     </TableRow>
@@ -316,8 +422,61 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                </Box>
+                </Box>}
+
+                {reports?.length > 0 && <Box>
+                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} sx={{marginTop : '20px', marginBottom : '20px'}}>
+                    <Typography variant="h6" color="#000" fontWeight="bold" sx={{ marginTop: '20px', marginBottom: '20px' }}>Generated Reports</Typography>
+                    <CustomButton
+                                    variant="contained"
+                                    startIcon={<Refresh />}
+                                    onClick={fetchReports}
+                                    color="primary"
+                                 />
+                        </Box>
+                    <TableContainer component={Paper}>
+                        <Table>
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell sx={{ fontSize: '14px' }}>Report Name</TableCell>
+                                    {/* <TableCell sx={{ fontSize: '14px' }}>Report Month</TableCell> */}
+                                    <TableCell sx={{ fontSize: '14px' }}>Generated On</TableCell>
+                                    <TableCell sx={{ fontSize: '14px' }}>View</TableCell>
+                                    {/* <TableCell sx={{ fontSize: '14px' }}>Remark</TableCell> */}
+                                </TableRow>
+                                {reports.map(doc => (
+                                    <TableRow key={doc.id}>
+                                        <TableCell>
+                                            <p style={{ fontSize: '12px' }}>
+                                                {(doc.file_path).split('/')[3]}
+                                            </p>
+                                        </TableCell>
+                                        {/* <TableCell sx={{ fontSize: '12px' }}>{doc?.doc_month}</TableCell> */}
+                                        <TableCell sx={{ fontSize: '12px' }}><DateDisplay isoString={doc.updated_ts} /></TableCell>
+                                        <TableCell><DownloadFile fileName={(doc.file_path).split('/')[3]} userID={doc.user_id} /></TableCell>                            
+                                        {/* <TableCell>
+                                            <p style={{ fontSize: '12px' }}>
+                                                {doc.remarks}
+                                            </p>
+                                        </TableCell> */}
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Box>}
             </DialogContent>
+
+            {selectedDoc && (
+                <ReuploadDialog
+                    open={reuploadDialogOpen}
+                    onClose={() => setReuploadDialogOpen(false)}
+                    onReupload={handleReupload}
+                    userId={selectedDoc.user_id}
+                    docId={selectedDoc.id}
+                    fileName={(selectedDoc.file_path).split('/')[2]}
+                />
+            )}
         </FullPageDialog>
     );
 };

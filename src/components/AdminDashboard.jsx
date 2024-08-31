@@ -27,6 +27,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BACKEND_SERVER, STATUS } from '../constants';
 import DownloadFile from './DownloadFile';
+import DateDisplay from './DateDisplay';
 
 const FullPageDialog = styled(Dialog)({
     width: '100vw',
@@ -161,7 +162,12 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [clientToDelete, setClientToDelete] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [docStatus, setDocStatus] = useState('');
+    const [statusChangeDialogOpen, setStatusChangeDialogOpen] = useState(false);
+    const [remarkDialogOpen, setRemarkDialogOpen] = useState(false);
+    const [newStatus, setNewStatus] = useState('');
+    const [documentIdToUpdate, setDocumentIdToUpdate] = useState(null);
+    const [remark, setRemark] = useState('');
+    const [oldStatus, setOldStatus] = useState('');
 
     useEffect(() => {
             fetchClients();
@@ -248,7 +254,45 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
         }
     };
 
-    const handleDocumentStatusChange = async (documentId, status) => {
+    // const handleDocumentStatusChange = async (documentId, status) => {
+    //     setLoading(true);
+    //     try {
+    //         await fetch(`${BACKEND_SERVER}/stag/api/documents/updatedocumentstatus`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    //             },
+    //             body: JSON.stringify({ 
+    //                 doc_id : documentId,
+    //                 doc_status : status }),
+    //         });
+    //         fetchClientDocuments(selectedClient.id);
+    //     } catch (error) {
+    //         console.error('Failed to update document status:', error);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+
+    const handleDocumentStatusChange = (documentId, status, currentStatus) => {
+        setNewStatus(status);
+        setOldStatus(STATUS[currentStatus]); // Store the current status for display in the dialog
+        setDocumentIdToUpdate(documentId);
+        setStatusChangeDialogOpen(true); // Open the confirmation dialog
+    };
+
+    const handleConfirmStatusChange = () => {
+        setStatusChangeDialogOpen(false);
+
+        if (newStatus === 'incorrect') {
+            setRemarkDialogOpen(true); // Open the remark dialog if the new status is "incorrect"
+        } else {
+            updateDocumentStatus(); // Directly update status if not "incorrect"
+        }
+    };
+
+    const updateDocumentStatus = async () => {
         setLoading(true);
         try {
             await fetch(`${BACKEND_SERVER}/stag/api/documents/updatedocumentstatus`, {
@@ -258,16 +302,20 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
                 body: JSON.stringify({ 
-                    doc_id : documentId,
-                    doc_status : status }),
+                    doc_id: documentIdToUpdate,
+                    doc_status: newStatus,
+                    remarks: newStatus === 'incorrect' ? remark : '', // Include remark if the status is "incorrect"
+                }),
             });
             fetchClientDocuments(selectedClient.id);
         } catch (error) {
             console.error('Failed to update document status:', error);
         } finally {
             setLoading(false);
+            setRemarkDialogOpen(false);
         }
     };
+
 
     const handleReportUpload = async () => {
         setLoading(true);
@@ -479,7 +527,9 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                                         <TableCell sx={{ fontSize: '14px'}}>File Name</TableCell>
                                         <TableCell sx={{ fontSize: '14px'}}>File Status</TableCell>
                                         <TableCell sx={{ fontSize: '14px'}}>View File</TableCell>
+                                        <TableCell sx={{ fontSize: '14px'}}>Updated Date</TableCell>
                                         <TableCell sx={{ fontSize: '14px'}}>Update Status</TableCell>
+                                        <TableCell sx={{ fontSize: '14px'}}>Remarks</TableCell>
                                         </TableRow>
                                             {documents.map((doc) => (
                                                 <TableRow key={doc.id}>
@@ -490,6 +540,7 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                                                     </TableCell>
                                                     <TableCell sx={{ fontSize: '12px'}}>{STATUS[doc.doc_status]}</TableCell>
                                                     <TableCell><DownloadFile fileName={(doc.file_path).split('/')[2]} userID={doc.user_id} /></TableCell>
+                                                    <TableCell sx={{ fontSize: '12px' }}><DateDisplay isoString={doc.updated_ts} /></TableCell>
                                                     <TableCell>
                                                         <Select
                                                             value={doc.doc_status}
@@ -503,11 +554,11 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                                                             <MenuItem value="incorrect">Incorrect</MenuItem>
                                                         </Select>
                                                     </TableCell>
-                                                    {/* <TableCell>
-                                                        <CustomButton variant="contained" color="primary" onClick={() => handleDocumentStatusChange(doc.id, docStatus)}>
-                                                            Update Status
-                                                        </CustomButton>
-                                                    </TableCell> */}
+                                                    <TableCell sx={{ fontSize: '12px'}}>
+                                                        <p style={{fontSize: '12px'}}>
+                                                            {doc.remarks}
+                                                        </p>
+                                                    </TableCell>
                                                 </TableRow>
                                             ))}
                                         </TableBody>
@@ -671,6 +722,44 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                 </DialogActions>
             </Dialog>
 
+             {/* Status Change Confirmation Dialog */}
+             <Dialog open={statusChangeDialogOpen} onClose={() => setStatusChangeDialogOpen(false)}>
+                    <ModalTitleStyled>Confirm Status Change</ModalTitleStyled>
+                    <DialogContent>
+                        <Typography>
+                            You are changing the status to <b>{STATUS[newStatus]}</b>. Are you sure you want to do that?
+                        </Typography>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setStatusChangeDialogOpen(false)} color="primary">No</Button>
+                        <Button onClick={handleConfirmStatusChange} color="secondary">Yes</Button>
+                    </DialogActions>
+                </Dialog>
+
+                {/* Remark Input Dialog */}
+                <Dialog open={remarkDialogOpen} onClose={() => setRemarkDialogOpen(false)}>
+                    <ModalTitleStyled>Provide Remark</ModalTitleStyled>
+                    <DialogContent>
+                        <Typography>
+                            Please provide a remark for changing the status to "Incorrect".
+                        </Typography>
+                        <TextField
+                            label="Remark"
+                            variant="outlined"
+                            fullWidth
+                            value={remark}
+                            onChange={(e) => setRemark(e.target.value)}
+                            multiline
+                            rows={4}
+                            sx={{ marginTop: '16px' }}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setRemarkDialogOpen(false)} color="primary">Cancel</Button>
+                        <Button onClick={updateDocumentStatus} color="secondary">{loading ? 'Submitting...' : 'Submit'}</Button>
+                    </DialogActions>
+                </Dialog>
+       
             {/* Delete Confirmation Modal */}
             <Dialog open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)} maxWidth="sm" fullWidth>
                 <ModalTitleStyled>Confirm Deletion
