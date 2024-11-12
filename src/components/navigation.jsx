@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Button } from "react-bootstrap";
-import LoginDialog from "./LoginDialog";
 import MultifactorLogin from "./MultifactorLogin";
+import { useNavigate } from "react-router-dom";
 
 export const Navigation = () => {
+  const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   // const [activeSection, setActiveSection] = useState("home");
@@ -16,6 +17,13 @@ export const Navigation = () => {
     setShow(true);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('loggedInUser');
+    navigate('/');
+}
   const handleMouseEnter = () => {
     setIsHovered(true);
   };
@@ -26,30 +34,6 @@ export const Navigation = () => {
 
   const observer = useRef();
 
-  // useEffect(() => {
-  //   const sections = document.querySelectorAll("section");
-  //   const options = {
-  //     threshold: 0.7,
-  //   };
-
-  //   observer.current = new IntersectionObserver((entries) => {
-  //     entries.forEach((entry) => {
-  //       if (entry.isIntersecting) {
-  //         setActiveSection(entry.target.id);
-  //       }
-  //     });
-  //   }, options);
-
-  //   sections.forEach((section) => {
-  //     observer.current.observe(section);
-  //   });
-
-  //   return () => {
-  //     if (observer.current) {
-  //       observer.current.disconnect();
-  //     }
-  //   };
-  // }, []);
 
   return (
     <>
@@ -68,7 +52,7 @@ export const Navigation = () => {
               <span className="icon-bar"></span>{" "}
               <span className="icon-bar"></span>{" "}
             </button>
-            <a className="navbar-brand page-scroll" href="#home">
+            <a className="navbar-brand page-scroll" href="/">
               <img src="img/ICON.svg" alt="logo" className="responsive-logo" />
             </a>{" "}
           </div>
@@ -78,7 +62,37 @@ export const Navigation = () => {
             id="bs-example-navbar-collapse-1"
           >
             <ul className="nav navbar-nav navbar-right">
-              <li>
+              {localStorage.getItem('token') ? (
+                <>
+                <li>
+                <a href="/dashboard">
+                  Dashboard
+                </a>
+              </li>
+                <li>
+                <Button
+                onClick={handleLogout}
+                variant="primary"
+                style={{
+                  border: "2px solid",
+                  borderRadius: "50px",
+                  backgroundColor: "#EE7501",
+                  color: "white",
+                  width: '100px',
+                  fontSize: '16px',
+                  paddingBottom: '10px'
+                }}
+              >
+                Logout
+              </Button>
+              </li>
+              {/* <li><h4>{localStorage.getItem('userName')} <IconButton color="success" fontSize="small">
+                                <Avatar />
+                            </IconButton></h4></li> */}
+              </>
+              ) : (
+                <>
+                <li>
                 <a href="#home" className="page-scroll">
                   Home
                 </a>
@@ -93,35 +107,30 @@ export const Navigation = () => {
                   Our Team
                 </a>
               </li>
-              {/* <li className={activeSection === "services" ? "active" : ""}>
-                <a href="#services" className="page-scroll">
-                  Services
-                </a>
-              </li> */}
               <li>
                 <a href="#contact" className="page-scroll">
                   Contact
                 </a>
               </li>
-              <li>
-                <Button
-                  onClick={handleShow}
-                  variant="primary"
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                  style={{
-                    border: "2px solid",
-                    borderRadius: "50px",
-                    backgroundColor: "#EE7501",
-                    color: "white",
-                    width: '100px',
-                    fontSize: '16px',
-                    paddingBottom: '10px'
-                  }}
-                >
-                  Login
-                </Button>
-              </li>
+              <Button
+                onClick={handleShow}
+                variant="primary"
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                style={{
+                  border: "2px solid",
+                  borderRadius: "50px",
+                  backgroundColor: "#EE7501",
+                  color: "white",
+                  width: '100px',
+                  fontSize: '16px',
+                  paddingBottom: '10px'
+                }}
+              >
+                Login
+              </Button>
+                </>
+              )}
             </ul>
             {show && <MultifactorLogin  handleClose={handleClose} />}
             {/* {show && <LoginDialog show={show} handleClose={handleClose} />} */}

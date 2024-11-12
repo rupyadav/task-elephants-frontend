@@ -16,7 +16,7 @@ const CustomButton = styled(Button)(({ theme }) => ({
     textTransform: 'none',
 }));
 
-const DownloadFile = ({ fileName, userID }) => {
+const DownloadFile = ({ fileName, fileUserId, userId }) => {
     const [loading, setLoading] = useState(false);
 
     const fetchPresignedUrl = async () => {
@@ -29,8 +29,9 @@ const DownloadFile = ({ fileName, userID }) => {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`, // if you use authentication
                 },
                 body: JSON.stringify({
-                    userId: userID,
-                    fileName: fileName
+                    userId: userId,
+                    fileName: fileName,
+                    fileUserId: fileUserId
                 }),
             });
 
@@ -72,6 +73,8 @@ const DownloadFile = ({ fileName, userID }) => {
                         backgroundColor: '#d66000',
                     }
                 }}
+                disabled={loading}
+                onClick={fetchPresignedUrl}
             >
                 {loading ? 'Downloading...' : 'Download'}
             </Button>

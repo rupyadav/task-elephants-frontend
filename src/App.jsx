@@ -1,16 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import { Navigation } from "./components/navigation";
-import { Header } from "./components/header";
-import { About } from "./components/about";
-import { Team } from "./components/Team";
-import { Contact } from "./components/contact";
-import JsonData from "./data/data.json";
 import SmoothScroll from "smooth-scroll";
 import "./App.css";
-import { FadeInSection } from "./components/FadeInSection";
 import { PrimeReactProvider } from 'primereact/api';
-import WhatHowWhy from "./components/WhatHowWhy";
-import Footer from "./components/Footer";
+import Dashboard from "./components/Dashboard";
+import Home from "./components/Home";
+import NotFound from "./components/NotFound";
         
 
 export const scroll = new SmoothScroll('a[href*="#"]', {
@@ -19,31 +15,19 @@ export const scroll = new SmoothScroll('a[href*="#"]', {
 });
 
 const App = () => {
-  const [landingPageData, setLandingPageData] = useState({});
-  useEffect(() => {
-    setLandingPageData(JsonData);
-  }, []);
 
   return (
-    <PrimeReactProvider>
+    <Router>
+      <PrimeReactProvider>
       <Navigation />
-      <Header data={landingPageData.Header} />
-      <FadeInSection>
-        <About data={landingPageData.About} />
-      </FadeInSection>
-      <FadeInSection>
-        <WhatHowWhy />
-      </FadeInSection>
-      <FadeInSection>
-        <Team/>
-      </FadeInSection>
-      <FadeInSection>
-        <Contact data={landingPageData.Contact} />
-      </FadeInSection>
-      <FadeInSection>
-        <Footer />
-      </FadeInSection>
+
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </PrimeReactProvider>
+    </Router>
   );
 };
 

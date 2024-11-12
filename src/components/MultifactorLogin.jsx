@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, TextField, Button, Typography, DialogActions, Box, IconButton, CircularProgress, useMediaQuery } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import FullScreenModal from './FullScreenModal';
 import { BACKEND_SERVER } from '../constants';
 import { Close } from '@material-ui/icons';
-import Dashboard from './Dashboard';
+import { useNavigate } from 'react-router-dom';
 
 const DialogTitleStyled = styled(DialogTitle)(({ theme }) => ({
     textAlign: 'center',
@@ -15,6 +14,7 @@ const DialogTitleStyled = styled(DialogTitle)(({ theme }) => ({
 }));
 
 const TextFieldStyled = styled(TextField)(({ theme }) => ({
+    fontSize: '16px',
     marginBottom: theme.spacing(2),
     '& .MuiOutlinedInput-root': {
         '& fieldset': {
@@ -27,11 +27,14 @@ const TextFieldStyled = styled(TextField)(({ theme }) => ({
             borderColor: '#777',
         },
     },
+    '& .MuiInputBase-input': {
+        fontSize: '14px', // Adjust this size as needed
+    },
 }));
 
 const SubmitButton = styled(Button)(({ theme }) => ({
     backgroundColor: '#EE7501',
-    fontSize: '12px',
+    fontSize: '14px',
     color: '#fff',
     '&:hover': {
         backgroundColor: '#d66000',
@@ -107,6 +110,8 @@ const LoaderOverlay = styled(Box)(({ theme }) => ({
 
 const MultifactorLogin = ({ handleClose }) => {
     const theme = useTheme();
+    const navigate = useNavigate();
+    // const { userID, setUserID } = useAuth();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     const [step, setStep] = useState(1);
@@ -116,15 +121,15 @@ const MultifactorLogin = ({ handleClose }) => {
     const [otpSuccess, setOtpSuccess] = useState(false);
     const [userID, setUserID] = useState('');
     const [error, setError] = useState('');
-    const [open, setOpen] = useState(false);
+    // const [open, setOpen] = useState(false);
     const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
     const [forgotPasswordStep, setForgotPasswordStep] = useState(1);
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [role, setRole] = useState('admin');
+    // const [role, setRole] = useState('admin');
     const [passwordReset, setPasswordReset] = useState(false);
     const [loading, setLoading] = useState(false); // Loader state
-    const [userName, setUserName] = useState('');
+    // const [userName, setUserName] = useState('');
 
     const authenticateUser = async () => {
         setLoading(true); // Start loader
@@ -144,6 +149,7 @@ const MultifactorLogin = ({ handleClose }) => {
                 setPasswordReset(false);
                 let json_res = await response.json();
                 setUserID(json_res.userId);
+                localStorage.setItem('loggedInUser', json_res.userId);
                 setOtp('');
                 sendOtp(json_res.userId, email);
             } else {
@@ -202,9 +208,9 @@ const MultifactorLogin = ({ handleClose }) => {
             if (response.ok) {
                 let json_res = await response.json();
                 localStorage.setItem('token', json_res.token);
-                setRole(json_res.user_role);
-                setUserName(json_res.name);
-                handleFullScreenModalClickOpen();
+                localStorage.setItem('role', json_res.user_role);
+                localStorage.setItem('userName', json_res.name);
+                showDashboard();
             } else {
                 setError('Invalid OTP. Please try again.');
                 setOtpSuccess(false);
@@ -220,18 +226,15 @@ const MultifactorLogin = ({ handleClose }) => {
         setForgotPasswordOpen(true);
     };
 
-    const handleFullScreenModalClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleFullScreenModalClose = () => {
-        setOpen(false);
-        localStorage.removeItem('token');
-        setStep(1);
+    const showDashboard = () => {
+        navigate('/dashboard');
+        // setOpen(false);
+        handleClose();
         setEmail('');
         setPassword('');
         setError('');
-        setOtpSuccess(false)
+        setOtpSuccess(false);
+        // setOpen(true);
     };
 
     const handleForgotPasswordSubmit = async () => {
@@ -249,6 +252,7 @@ const MultifactorLogin = ({ handleClose }) => {
                 if (response.ok) {
                     let json_res = await response.json();
                     setUserID(json_res.userId);
+                    localStorage.setItem('loggedInUser', json_res.userId);
                     sendOtpForReset(json_res.userId, email);
                     setError('');
                 } else {
@@ -325,7 +329,7 @@ const MultifactorLogin = ({ handleClose }) => {
 
     return (
         <div>
-            {open && <Dashboard open={open} handleFullScreenModalClose={handleFullScreenModalClose} role={role} userName={userName} userID={userID}/>}
+            {/* {open && <Dashboard open={open} handleFullScreenModalClose={handleFullScreenModalClose} role={role} userName={userName} userID={userID}/>} */}
             <Dialog
                 open={step === 1}
                 onClose={handleClose}
@@ -382,7 +386,7 @@ const MultifactorLogin = ({ handleClose }) => {
                     style={{ position: isSmallScreen ? 'relative' : 'absolute', bottom: 0, right: 0 }}
                 >
                     <SubmitButton onClick={authenticateUser}>Submit</SubmitButton>
-                    {/* <SubmitButton onClick={() => handleFullScreenModalClickOpen()}>Submit</SubmitButton> */}
+                    {/* <SubmitButton onClick={() => showDashboard()}>Submit</SubmitButton> */}
                 </DialogActions>
             </Dialog>
 

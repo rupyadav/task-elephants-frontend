@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
     Button,
     Typography,
     Box,
@@ -15,9 +11,10 @@ import {
     TableContainer,
     Paper,
     CircularProgress,
+    Avatar,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Close, Delete, Refresh } from '@material-ui/icons';
+import { Delete, Refresh } from '@material-ui/icons';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Dropzone from 'react-dropzone';
@@ -27,36 +24,7 @@ import DateDisplay from './DateDisplay';
 import DownloadFile from './DownloadFile';
 import ReuploadDialog from './ReuploadDialog';
 import { getCurrentDateFormatted, convertDateFormat } from '../utils/dateUtils';
-
-const FullPageDialog = styled(Dialog)({
-    width: '100vw',
-    height: '100vh',
-    maxWidth: 'none',
-    maxHeight: 'none',
-    margin: 0,
-    backgroundColor: '#E4DDD8',
-});
-
-const LogoutButton = styled(Button)(({ theme }) => ({
-    backgroundColor: '#EE7501',
-    color: '#fff',
-    fontSize: '12px',
-    '&:hover': {
-        backgroundColor: '#EE7501',
-    },
-    position: 'absolute',
-    right: theme.spacing(2),
-    top: theme.spacing(2),
-}));
-
-const TitleStyled = styled(DialogTitle)(({ theme }) => ({
-    textAlign: 'center',
-    color: '#EE7501',
-    fontWeight: 'bold',
-    fontSize: '20px',
-    backgroundColor: '#E4DDD8',
-    fontFamily: 'Georgia, serif',
-}));
+import { useNavigate } from 'react-router-dom';
 
 const UploadButton = styled(Button)(({ theme }) => ({
     backgroundColor: '#EE7501',
@@ -100,13 +68,15 @@ const LoaderOverlay = styled(Box)(({ theme }) => ({
     alignItems: 'center',
 }));
 
-const ClientDashboard = ({ open, onClose, userName, userID }) => {
+const ClientDashboard = ({ userName, loggedInUser }) => {
+    const navigate = useNavigate();
     const [documents, setDocuments] = useState([]);
     const [loading, setLoading] = useState(false);
     const [uploadedDocs, setUploadedDocs] = useState([]);
     const [reports, setReports] = useState([]);
     const [reuploadDialogOpen, setReuploadDialogOpen] = useState(false); // State to control ReuploadDialog
     const [selectedDoc, setSelectedDoc] = useState(null); // State to store selected document for reupload
+    const [sessionExpired, setSessionExpired] = useState(false);
 
     useEffect(() => {
         fetchUploadedDocuments();
@@ -138,7 +108,7 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
         }));
         try {
             // Get presigned URLs for all documents
-            const presignedUrls = await getPresignedUrls(userID, documentList);
+            const presignedUrls = await getPresignedUrls(loggedInUser, documentList);
             // Upload each file to S3 using the corresponding presigned URL
             const uploadPromises = presignedUrls?.map((urlObj, index) =>
                 uploadToS3(urlObj.presignedUrl, documents[index].file)
@@ -147,7 +117,7 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
             await Promise.all(uploadPromises);
 
             // Call API to insert document records into the database
-            await insertDocumentsToDB(userID, documentList);
+            await insertDocumentsToDB(loggedInUser, documentList);
 
             setDocuments([]);
             toast.success('Documents successfully uploaded and are now In Review.');
@@ -175,7 +145,7 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
         try {
             const presignedUrls = await getReuploadPresignedUrls(userId, documentList);
             await uploadToS3(presignedUrls[0].presignedUrl, file);
-            await updateDocumentsToDB(docId, userID, reuploadedFileName);
+            await updateDocumentsToDB(docId, loggedInUser, reuploadedFileName);
 
             toast.success('File successfully reuploaded.');
             fetchUploadedDocuments();
@@ -188,7 +158,7 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
         }
     };
 
-    const getPresignedUrls = async (userID, documentList) => {
+    const getPresignedUrls = async (loggedInUser, documentList) => {
         const response = await fetch(`${BACKEND_SERVER}/stag/api/documents/getuploadpresignedurl`, {
             method: 'POST',
             headers: {
@@ -196,15 +166,20 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
             },
             body: JSON.stringify({
-                userId: userID,
+                userId: loggedInUser,
                 documentList: documentList
             }),
         });
         const res_json = await response.json();
-        return res_json.data;
+        if(res_json.error){
+            toast.error('Session expired. Please Login again.')
+            setSessionExpired(true);
+        }else{
+            return res_json.data;
+        }
     };
 
-    const getReuploadPresignedUrls = async (userID, documentList) => {
+    const getReuploadPresignedUrls = async (loggedInUser, documentList) => {
         const response = await fetch(`${BACKEND_SERVER}/stag/api/documents/getreuploadpresignedurl`, {
             method: 'POST',
             headers: {
@@ -212,12 +187,17 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
             },
             body: JSON.stringify({
-                userId: userID,
+                userId: loggedInUser,
                 documentList: documentList,
             }),
         });
         const res_json = await response.json();
-        return res_json.data;
+        if(res_json.error){
+            toast.error('Session expired. Please Login again.')
+            setSessionExpired(true);
+        }else{
+            return res_json.data;
+        }
     };
 
     const uploadToS3 = async (url, file) => {
@@ -230,7 +210,7 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
         });
     };
 
-    const insertDocumentsToDB = async (userID, documentList) => {
+    const insertDocumentsToDB = async (loggedInUser, documentList) => {
         await fetch(`${BACKEND_SERVER}/stag/api/documents/insertdocumentrecord`, {
             method: 'POST',
             headers: {
@@ -238,13 +218,14 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
             },
             body: JSON.stringify({
-                userId: userID,
+                fileUserId: loggedInUser,
+                userId: loggedInUser,
                 documentList: documentList,
             }),
         });
     };
 
-    const updateDocumentsToDB = async (docId, userID, reuploadedFileName) => {
+    const updateDocumentsToDB = async (docId, loggedInUser, reuploadedFileName) => {
         await fetch(`${BACKEND_SERVER}/stag/api/documents/updatereuploadrecord`, {
             method: 'POST',
             headers: {
@@ -253,7 +234,7 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
             },
             body: JSON.stringify({
                 docId: docId,
-                userId: userID,
+                userId: loggedInUser,
                 fileName: reuploadedFileName,
                 docStatus: "in_review",
                 remarks: "Reuploaded",
@@ -271,10 +252,15 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
-                body: JSON.stringify({ userId: userID }),
+                body: JSON.stringify({ userId: loggedInUser }),
             });
             const json_rec = await response.json();
-            setUploadedDocs(json_rec.data || []);
+            if(json_rec.error){
+                toast.error('Session expired. Please Login again.')
+                setSessionExpired(true);
+            }else{
+                setUploadedDocs(json_rec.data || []);
+            }
         } catch (error) {
             console.error('Failed to fetch documents:', error);
         } finally {
@@ -291,10 +277,15 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
-                body: JSON.stringify({ userId: userID }),
+                body: JSON.stringify({ userId: loggedInUser }),
             });
             const json_rec = await response.json();
-            setReports(json_rec.data || []);
+            if(json_rec.error){
+                toast.error('Session expired. Please Login again.')
+                setSessionExpired(true);
+            }else{
+                setReports(json_rec.data || []);
+            }
         } catch (error) {
             console.error('Failed to fetch Reports:', error);
         } finally {
@@ -304,83 +295,79 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
 
     const handleLogout = () => {
         localStorage.removeItem('token');
-        onClose();
+        navigate('/');
     };
 
     return (
-        <FullPageDialog open={open} onClose={onClose} fullScreen>
-            <TitleStyled>
-                Dashboard for {userName}
-                <LogoutButton onClick={() => handleLogout()}>
-                    Logout
-                </LogoutButton>
-            </TitleStyled>
-            <DialogContent>
-                <ToastContainer autoClose={3000} />
-                {loading && (
+        <Box p={5} sx={{ maxWidth: '1200px', margin: 'auto' }}>
+       {!sessionExpired ? (<><Box mt={8}>
+        <ToastContainer autoClose={3000} />
+        {loading && (
                     <LoaderOverlay>
                         <CircularProgress color="inherit" />
                     </LoaderOverlay>
                 )}
-                <Box mb={3}>
-                    <Typography variant="h6" color="#000" fontWeight="bold" sx={{ marginTop: '20px', marginBottom: '20px' }}>Upload Documents</Typography>
-                    <Dropzone onDrop={handleDrop}>
-                        {({ getRootProps, getInputProps }) => (
-                            <Box
-                                {...getRootProps()}
-                                sx={{
-                                    border: '2px dashed #EE7501',
-                                    padding: '20px',
-                                    textAlign: 'center',
-                                    cursor: 'pointer',
-                                    marginBottom: '20px',
-                                }}
-                            >
-                                <input {...getInputProps()} />
-                                <Typography>Drag & drop files here, or click to select files</Typography>
-                            </Box>
-                        )}
-                    </Dropzone>
-                    <TableContainer component={Paper}>
-                        <Table>
-                            <TableBody>
-                                {documents.map(doc => (
-                                    <TableRow key={doc.id}>
-                                        <TableCell>
-                                            <Typography>{doc.name}</Typography>
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <DeleteButton onClick={() => handleRemoveDocument(doc.id)}>
+                <div  style={{ textAlign: 'right',  color: '#000', padding: '0px' }}>
+                <h4 style={{color: '#000', fontSize: '16px'}}>Welcome, {localStorage.getItem('userName')} <IconButton color="success">
+                                <Avatar color="success"/>
+                            </IconButton></h4>
+                        </div>
+                
+            <Typography variant="h6" color="#000" fontWeight="bold" sx={{ marginTop: '20px', marginBottom: '20px' }}>Upload Documents</Typography>
+            <Dropzone onDrop={handleDrop}>
+                {({ getRootProps, getInputProps }) => (
+                    <Box {...getRootProps()} sx={{
+                        border: '2px dashed #EE7501',
+                        padding: '20px',
+                        textAlign: 'center',
+                        cursor: 'pointer',
+                        marginBottom: '20px'
+                    }}>
+                        <input {...getInputProps()} />
+                        <Typography>Drag & drop files here, or click to select files</Typography>
+                    </Box>
+                )}
+            </Dropzone>
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableBody>
+                        {documents.map(doc => (
+                            <TableRow key={doc.id}>
+                                <TableCell>
+                                    <Typography>{doc.name}</Typography>
+                                    </TableCell>
+                                <TableCell align="right">
+                                <DeleteButton onClick={() => handleRemoveDocument(doc.id)}>
                                                 <Delete />
                                             </DeleteButton>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    {documents.length > 0 && (
-                        <Box mt={2}>
-                            <UploadButton onClick={handleUpload}>Upload Documents</UploadButton>
-                        </Box>
-                    )}
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            {documents.length > 0 && (
+                <Box mt={2}>
+                    <UploadButton onClick={handleUpload}>Upload Documents</UploadButton>
                 </Box>
+            )}
+        </Box>
 
-                {uploadedDocs?.length > 0 && <Box>
-                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} sx={{ marginTop: '20px', marginBottom: '20px' }}>
-                        <Typography variant="h6" color="#000" fontWeight="bold" sx={{ marginTop: '20px', marginBottom: '20px' }}>Documents Uploaded By You</Typography>
-                        <CustomButton
-                            variant="contained"
-                            startIcon={<Refresh />}
-                            onClick={fetchUploadedDocuments}
-                            color="primary"
-                        />
-                    </Box>
-                    <div style={{ width: '80%', margin: 'auto' }}>
-                        <TableContainer component={Paper}>
-                            <Table>
-                                <TableBody>
-                                    <TableRow>
+        {uploadedDocs?.length > 0 && (<Box>
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} sx={{ marginTop: '20px', marginBottom: '20px' }}>
+                <Typography variant="h6" color="#000" fontWeight="bold" sx={{ marginTop: '20px', marginBottom: '20px' }}>Documents Uploaded By You</Typography>
+                <CustomButton
+                    variant="contained"
+                    startIcon={<Refresh />}
+                    onClick={fetchUploadedDocuments}
+                    color="primary"
+                />
+                </Box>
+                <div style={{ width: '85%', margin: 'auto' }}>
+                <TableContainer component={Paper} sx={{ mt: 2 }}>
+                    <Table>
+                        <TableBody>
+                        <TableRow>
                                         <TableCell sx={{ fontSize: '14px' }}>File Name</TableCell>
                                         <TableCell sx={{ fontSize: '14px' }}>File Status</TableCell>
                                         <TableCell sx={{ fontSize: '14px' }}>View File</TableCell>
@@ -388,47 +375,48 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
                                         <TableCell sx={{ fontSize: '14px' }}>Remark</TableCell>
                                         <TableCell sx={{ fontSize: '14px' }}>Action</TableCell>
                                     </TableRow>
-                                    {uploadedDocs.map(doc => (
-                                        <TableRow key={doc.id}>
-                                            <TableCell>
-                                                <p style={{ fontSize: '12px' }}>
+                            {uploadedDocs.map(doc => (
+                                <TableRow key={doc.id}>
+                                    <TableCell>
+                                    <p style={{ fontSize: '12px' }}>
                                                     {(doc.file_path).split('/')[2]}
                                                 </p>
-                                            </TableCell>
-                                            <TableCell sx={{ fontSize: '12px' }}>{STATUS[doc.doc_status]}</TableCell>
-                                            <TableCell><DownloadFile fileName={(doc.file_path).split('/')[2]} userID={doc.user_id} /></TableCell>
-                                            <TableCell sx={{ fontSize: '12px' }}><DateDisplay isoString={doc.updated_ts} /></TableCell>
-                                            <TableCell>
-                                                <p style={{ fontSize: '12px' }}>
+                                    </TableCell>
+                                    <TableCell sx={{ fontSize: '12px' }}>{STATUS[doc.doc_status]}</TableCell>
+                                    <TableCell><DownloadFile fileName={(doc.file_path).split('/')[2]} fileUserId={doc.user_id} userId={loggedInUser} /></TableCell>
+                                    <TableCell sx={{ fontSize: '12px' }}><DateDisplay isoString={doc.updated_ts} /></TableCell>
+                                    <TableCell>
+                                        <p style={{ fontSize: '12px' }}>
                                                     {doc.remarks}
                                                 </p>
-                                            </TableCell>
-                                            <TableCell>
-                                                {doc.doc_status === 'incorrect' && (
-                                                    <Button
-                                                        variant="contained"
-                                                        style={{
-                                                            backgroundColor: 'EE7501',
-                                                            color: '#fff',
-                                                            '&:hover': {
-                                                                backgroundColor: '#d66000',
-                                                            }
-                                                        }}
-                                                        color="primary"
-                                                        onClick={() => handleReuploadClick(doc)}>
-                                                        Reupload
-                                                    </Button>
-                                                )}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </div>
-                </Box>}
+                                                </TableCell>
+                                    <TableCell>
+                                        {doc.doc_status === 'incorrect' && (
+                                            <Button
+                                            variant="contained"
+                                            style={{
+                                                backgroundColor: 'EE7501',
+                                                color: '#fff',
+                                                '&:hover': {
+                                                    backgroundColor: '#d66000',
+                                                }
+                                            }}
+                                            color="primary"
+                                            onClick={() => handleReuploadClick(doc)}>
+                                            Reupload
+                                        </Button>
+                                        )}
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                </div>
+            </Box>
+        )}
 
-                {reports?.length > 0 && <Box>
+{reports?.length > 0 && (<Box>
                     <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} sx={{ marginTop: '20px', marginBottom: '20px' }}>
                         <Typography variant="h6" color="#000" fontWeight="bold" sx={{ marginTop: '20px', marginBottom: '20px' }}>Generated Reports</Typography>
                         <CustomButton
@@ -438,7 +426,7 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
                             color="primary"
                         />
                     </Box>
-                    <div style={{ width: '80%', margin: 'auto' }}>
+                    <div style={{ width: '85%', margin: 'auto' }}>
                         <TableContainer component={Paper}>
                             <Table>
                                 <TableBody>
@@ -458,7 +446,7 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
                                             </TableCell>
                                             {/* <TableCell sx={{ fontSize: '12px' }}>{doc?.doc_month}</TableCell> */}
                                             <TableCell sx={{ fontSize: '12px' }}><DateDisplay isoString={doc.updated_ts} /></TableCell>
-                                            <TableCell><DownloadFile fileName={(doc.file_path).split('/')[3]} userID={doc.user_id} /></TableCell>
+                                            <TableCell><DownloadFile fileName={(doc.file_path).split('/')[3]} fileUserId={doc.user_id} userId={loggedInUser} /></TableCell>
                                             {/* <TableCell>
                                             <p style={{ fontSize: '12px' }}>
                                                 {doc.remarks}
@@ -470,20 +458,21 @@ const ClientDashboard = ({ open, onClose, userName, userID }) => {
                             </Table>
                         </TableContainer>
                     </div>
-                </Box>}
-            </DialogContent>
+                </Box>)}
 
-            {selectedDoc && (
-                <ReuploadDialog
-                    open={reuploadDialogOpen}
-                    onClose={() => setReuploadDialogOpen(false)}
-                    onReupload={handleReupload}
-                    userId={selectedDoc.user_id}
-                    docId={selectedDoc.id}
-                    fileName={(selectedDoc.file_path).split('/')[2]}
-                />
-            )}
-        </FullPageDialog>
+        {selectedDoc && (
+            <ReuploadDialog
+                open={reuploadDialogOpen}
+                onClose={() => setReuploadDialogOpen(false)}
+                onReupload={handleReupload}
+                userId={selectedDoc.user_id}
+                docId={selectedDoc.id}
+                fileName={(selectedDoc.file_path).split('/')[2]}
+            />
+        )}</>) : (<Box>
+            <div style={{padding: '150px', margin: 'auto', width: '60%'}}><h4>
+                    Session Expired !! Please Logout and Login again.</h4></div></Box>)}
+    </Box>
     );
 };
 

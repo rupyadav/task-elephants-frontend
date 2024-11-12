@@ -19,6 +19,7 @@ import {
     MenuItem,
     Tooltip,
     CircularProgress,
+    Avatar,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { DataGrid } from '@mui/x-data-grid';
@@ -28,15 +29,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { BACKEND_SERVER, STATUS } from '../constants';
 import DownloadFile from './DownloadFile';
 import DateDisplay from './DateDisplay';
-
-const FullPageDialog = styled(Dialog)({
-    width: '100vw',
-    height: '100vh',
-    maxWidth: 'none',
-    maxHeight: 'none',
-    margin: 0,
-    backgroundColor: '#E4DDD8',
-});
+import { useNavigate } from 'react-router-dom';
+import ActionLogModal from './ActionLogModal';
 
 const TitleStyled = styled(DialogTitle)(({ theme }) => ({
     textAlign: 'center',
@@ -146,7 +140,8 @@ const LoaderOverlay = styled(Box)(({ theme }) => ({
     zIndex: 9999,
 }));
 
-const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
+const AdminDashboard = ({ userName, loggedInUser, role }) => {
+    const navigate = useNavigate();
     const [clients, setClients] = useState([]);
     const [selectedClient, setSelectedClient] = useState(null);
     const [documentStatus, setDocumentStatus] = useState('');
@@ -170,6 +165,8 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
     const [oldStatus, setOldStatus] = useState('');
     const [reports, setReports] = useState([]);
     const fileInputRef = useRef(null);
+    const [sessionExpired, setSessionExpired] = useState(false);
+    const [actionLogModalOpen, setActionLogModalOpen] = useState(false);
 
     useEffect(() => {
         fetchClients();
@@ -187,7 +184,12 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                     }
                 });
             const res = await response.json();
-            setClients(res.data || []);
+            if(res.error){
+                toast.error('Session expired. Please Login again.')
+                setSessionExpired(true);
+            }else{
+                setClients(res.data || []);
+            }
         } catch (error) {
             console.error('Failed to fetch clients:', error);
         } finally {
@@ -207,7 +209,12 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                 body: JSON.stringify({ userId: clientId }),
             });
             const json_rec = await response.json();
-            setReports(json_rec.data || []);
+            if(json_rec.error){
+                toast.error('Session expired. Please Login again.')
+                setSessionExpired(true);
+            }else{
+                setReports(json_rec.data || []);
+            }
         } catch (error) {
             console.error('Failed to fetch Reports:', error);
         } finally {
@@ -233,7 +240,12 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                 body: JSON.stringify({ userId: userId }),
             });
             const json_res = await response.json();
-            setDocuments(json_res.data || []);
+            if(json_res.error){
+                toast.error('Session expired. Please Login again.')
+                setSessionExpired(true);
+            }else{
+                setDocuments(json_res.data || []);
+            }
         } catch (error) {
             console.error('Failed to fetch documents:', error);
         } finally {
@@ -306,6 +318,7 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
                 body: JSON.stringify({
+                    user_id: loggedInUser,
                     doc_id: documentIdToUpdate,
                     doc_status: newStatus,
                     remarks: newStatus === 'incorrect' ? remark : '', // Include remark if the status is "incorrect"
@@ -483,12 +496,13 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
 
     const handleLogout = () => {
         localStorage.removeItem('token');
-        onClose();
+        navigate('/');
     }
 
     // Handle Report Upload Section 
 
     const handleReportUpload = async () => {
+        console.log("newReport", newReport, newReport.type);
         const documentList = [{
             fileName: newReport.name,
             fileType: newReport.type
@@ -498,7 +512,7 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
 
         try {
             const presignedUrls = await getPresignedUrls(selectedClient.id, documentList);
-            await uploadToS3(presignedUrls[0].presignedUrl, newReport);
+            await uploadToS3(presignedUrls[0].presignedUrl, newReport, newReport.type);
             await insertReportToDb(selectedClient.id, documentList);
 
             toast.success('Report successfully uploaded.');
@@ -515,7 +529,7 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
         }
     };
 
-    const getPresignedUrls = async (userID, documentList) => {
+    const getPresignedUrls = async (userId, documentList) => {
         const response = await fetch(`${BACKEND_SERVER}/stag/api/reports/getuploadpresignedurl`, {
             method: 'POST',
             headers: {
@@ -523,7 +537,7 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
             },
             body: JSON.stringify({
-                userId: userID,
+                userId: userId,
                 documentList: documentList
             }),
         });
@@ -531,17 +545,17 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
         return res_json.data;
     };
 
-    const uploadToS3 = async (url, file) => {
+    const uploadToS3 = async (url, file, type) => {
         await fetch(url, {
             method: 'PUT',
             body: file,
             headers: {
-                'Content-Type': file.type,
+                'Content-Type': type,
             },
         });
     };
 
-    const insertReportToDb = async (userID, documentList) => {
+    const insertReportToDb = async (userId, documentList) => {
         await fetch(`${BACKEND_SERVER}/stag/api/reports/insertreportrecord`, {
             method: 'POST',
             headers: {
@@ -549,21 +563,21 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
             },
             body: JSON.stringify({
-                userId: userID,
+                userId: loggedInUser,
+                fileUserId: userId,
                 documentList: documentList,
             }),
         });
     };
 
     return (
-        <FullPageDialog open={open} onClose={onClose} fullScreen>
-            <TitleStyled>
+<Box p={5} sx={{ maxWidth: '1200px', margin: 'auto' }}>
+            {/* <TitleStyled>
                 Dashboard for {userName}
-                <LogoutButton onClick={() => handleLogout()}>
-                    Logout
-                </LogoutButton>
-            </TitleStyled>
-            <DialogContent>
+                <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
+            </TitleStyled> */}
+
+            {!sessionExpired ? <Box mt={8}>
                 <ToastContainer autoClose={3000} />
                 {loading && (
                     <LoaderOverlay>
@@ -571,138 +585,109 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                     </LoaderOverlay>
                 )}
                 <Box>
-                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2} sx={{ marginTop: '20px', marginBottom: '20px' }}>
-                        <Typography variant="h6" color="#000" fontWeight="bold" fontSize='14px' >
-                            Client List
-                        </Typography>
-                        <Box display="flex" alignItems="center" gap={2}>
-                            {role === 'admin' && <CustomButton variant="contained" onClick={() => handleOnboardClientModal()}>
-                                Onboard New Client
-                            </CustomButton>}
-                            <CustomButton
-                                variant="contained"
-                                startIcon={<Refresh />}
-                                onClick={fetchClients}
-                                color="primary"
-                            />
-                        </Box>
+                <div  style={{ textAlign: 'right',  color: '#000' }}>
+                <h4 style={{color: '#000', fontSize: '16px'}}>Welcome, {localStorage.getItem('userName')} <IconButton color="success">
+                                <Avatar color="success"/>
+                            </IconButton></h4>
+                        </div>
+                </Box>
+                <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                    <Typography variant="h6" color="#000" fontWeight="bold" fontSize='14px'>Client List</Typography>
+                    <Box display="flex" alignItems="center" gap={2}>
+                        {role === 'admin' && <CustomButton variant="contained" onClick={() => handleOnboardClientModal}>Onboard New Client</CustomButton>}
+                        {role === 'admin' && <CustomButton variant="contained" onClick={() => setActionLogModalOpen(true)}>View Action Logs</CustomButton>}
+                        <CustomButton variant="contained" startIcon={<Refresh />} onClick={fetchClients} color="primary" />
                     </Box>
-                    <div style={{ width: '80%', margin: 'auto' }}>
-                        <TableContainer component={Paper}>
-                            <DataGridStyled
-                                rows={clients}
-                                columns={clientColumns}
-                                pageSize={5}
-                                rowsPerPageOptions={[5]}
-                                autoHeight
-                            />
-                        </TableContainer>
-                    </div>
-                    {selectedClient && selectedClient.user_role === 'client' && (
-                        <Box mt={4}>
-                            <Typography variant="h6" color="#000" fontWeight="bold" fontSize='14px'>Manage Documents for <span style={{ color: '#EE7501' }}>{selectedClient.name}</span></Typography>
-                            <div style={{ width: '80%', margin: 'auto' }}>
-                                <TableContainer component={Paper} sx={{ mt: 2 }}>
-                                    <Table>
-                                        <TableBody>
-                                            <TableRow>
-                                                <TableCell sx={{ fontSize: '14px' }}>File Name</TableCell>
-                                                <TableCell sx={{ fontSize: '14px' }}>File Status</TableCell>
-                                                <TableCell sx={{ fontSize: '14px' }}>View File</TableCell>
-                                                <TableCell sx={{ fontSize: '14px' }}>Updated Date</TableCell>
-                                                <TableCell sx={{ fontSize: '14px' }}>Update Status</TableCell>
-                                                <TableCell sx={{ fontSize: '14px' }}>Remarks</TableCell>
+                    <ActionLogModal
+                open={actionLogModalOpen}
+                onClose={() => setActionLogModalOpen(false)}
+            />
+                </Box>
+
+                <div style={{ width: '85%', margin: 'auto' }}>
+                    <TableContainer component={Paper}>
+                        <DataGridStyled rows={clients} columns={clientColumns} pageSize={5} rowsPerPageOptions={[5]} autoHeight />
+                    </TableContainer>
+                </div>
+
+                {selectedClient && selectedClient.user_role === 'client' && (
+                    <Box mt={3}>
+                        <div  style={{ width: '85%', margin: 'auto', textAlign: 'center', padding: '10px', backgroundColor: '#EE7501', color: '#fff' }}>
+                        <Typography variant="h4" color="#fff" fontWeight="bold" fontSize='14px'>Client Name :- <span style={{ color: '#fff' }}>{selectedClient.name}</span></Typography>
+                        </div>
+                        <Typography variant="h6" color="#000" fontWeight="bold" fontSize='14px' paddingTop="10px">Manage Documents</Typography>
+                        <div style={{ width: '85%', margin: 'auto' }}>
+                            <TableContainer component={Paper} sx={{ mt: 2 }}>
+                                <Table>
+                                    <TableBody>
+                                        <TableRow>
+                                            <TableCell sx={{ fontSize: '14px' }}>File Name</TableCell>
+                                            <TableCell sx={{ fontSize: '14px' }}>File Status</TableCell>
+                                            <TableCell sx={{ fontSize: '14px' }}>View File</TableCell>
+                                            <TableCell sx={{ fontSize: '14px' }}>Updated Date</TableCell>
+                                            <TableCell sx={{ fontSize: '14px' }}>Update Status</TableCell>
+                                            <TableCell sx={{ fontSize: '14px' }}>Remarks</TableCell>
+                                        </TableRow>
+                                        {documents.map((doc) => (
+                                            <TableRow key={doc.id}>
+                                                <TableCell sx={{ fontSize: '12px' }}>{(doc.file_path).split('/')[2]}</TableCell>
+                                                <TableCell sx={{ fontSize: '12px' }}>{STATUS[doc.doc_status]}</TableCell>
+                                                <TableCell><DownloadFile fileName={(doc.file_path).split('/')[2]} fileUserId={doc.user_id} userId={loggedInUser} /></TableCell>
+                                                <TableCell sx={{ fontSize: '12px' }}><DateDisplay isoString={doc.updated_ts} /></TableCell>
+                                                <TableCell>
+                                                    <Select value={doc.doc_status} sx={{ fontSize: '12px' }} onChange={(e) => handleDocumentStatusChange(doc.id, e.target.value)}>
+                                                        <MenuItem value="in_review">In Review</MenuItem>
+                                                        <MenuItem value="approved">Approved</MenuItem>
+                                                        <MenuItem value="in_process">In Process</MenuItem>
+                                                        <MenuItem value="processed">Processed</MenuItem>
+                                                        <MenuItem value="incorrect">Incorrect</MenuItem>
+                                                    </Select>
+                                                </TableCell>
+                                                <TableCell sx={{ fontSize: '12px' }}>{doc.remarks}</TableCell>
                                             </TableRow>
-                                            {documents.map((doc) => (
-                                                <TableRow key={doc.id}>
-                                                    <TableCell sx={{ fontSize: '12px' }}>
-                                                        <p style={{ fontSize: '12px' }}>
-                                                            {(doc.file_path).split('/')[2]}
-                                                        </p>
-                                                    </TableCell>
-                                                    <TableCell sx={{ fontSize: '12px' }}>{STATUS[doc.doc_status]}</TableCell>
-                                                    <TableCell><DownloadFile fileName={(doc.file_path).split('/')[2]} userID={doc.user_id} /></TableCell>
-                                                    <TableCell sx={{ fontSize: '12px' }}><DateDisplay isoString={doc.updated_ts} /></TableCell>
-                                                    <TableCell>
-                                                        <Select
-                                                            value={doc.doc_status}
-                                                            sx={{ fontSize: '12px' }}
-                                                            onChange={(e) => handleDocumentStatusChange(doc.id, e.target.value)}
-                                                        >
-                                                            <MenuItem value="in_review">In Review</MenuItem>
-                                                            <MenuItem value="approved">Approved</MenuItem>
-                                                            <MenuItem value="in_process">In Process</MenuItem>
-                                                            <MenuItem value="processed">Processed</MenuItem>
-                                                            <MenuItem value="incorrect">Incorrect</MenuItem>
-                                                        </Select>
-                                                    </TableCell>
-                                                    <TableCell sx={{ fontSize: '12px' }}>
-                                                        <p style={{ fontSize: '12px' }}>
-                                                            {doc.remarks}
-                                                        </p>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                            </div>
-                            <Box mt={4}>
-                                <Typography variant="h6" color="#000" fontWeight="bold" fontSize='14px'>Upload Report for {selectedClient.name}</Typography>
-                                <div style={{ width: '80%', paddingLeft: '40%' }}>
-                                    <input
-                                        type="file"
-                                        ref={fileInputRef}
-                                        onChange={(e) => setNewReport(e.target.files[0])}
-                                        style={{ display: 'block', margin: '10px 0' }}
-                                    />
-                                </div>
-                                <div style={{ width: '80%', paddingLeft: '40%', paddingBottom: '20px' }}>
-                                    <CustomButton variant="contained" color="primary" onClick={handleReportUpload}>
-                                        Upload Report
-                                    </CustomButton>
-                                </div>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </div>
+                        <Box mt={4}>
+                            <Typography variant="h6" color="#000" fontWeight="bold" fontSize='14px'>Upload Report</Typography>
+                            <Box style={{ width: '85%', paddingLeft: '40%' }}>
+                                <input type="file" ref={fileInputRef} onChange={(e) => setNewReport(e.target.files[0])} style={{ display: 'block', margin: '10px 0' }} />
+                                <CustomButton variant="contained" color="primary" onClick={handleReportUpload}>Upload Report</CustomButton>
                             </Box>
                         </Box>
-                    )}
-                </Box>
-                {reports?.length > 0 && <Box>
-                    <Typography variant="h6" color="#000" fontWeight="bold" fontSize='14px' sx={{ marginTop: '20px', marginBottom: '20px' }}>Uploaded Reports</Typography>
-                    <div style={{ width: '80%', margin: 'auto' }}>
-                        <TableContainer component={Paper}>
-                            <Table>
-                                <TableBody>
-                                    <TableRow>
-                                        <TableCell sx={{ fontSize: '14px' }}>Report Name</TableCell>
-                                        {/* <TableCell sx={{ fontSize: '14px' }}>Report Month</TableCell> */}
-                                        <TableCell sx={{ fontSize: '14px' }}>Generated On</TableCell>
-                                        <TableCell sx={{ fontSize: '14px' }}>View</TableCell>
-                                        {/* <TableCell sx={{ fontSize: '14px' }}>Remark</TableCell> */}
-                                    </TableRow>
-                                    {reports.map(doc => (
-                                        <TableRow key={doc.id}>
-                                            <TableCell>
-                                                <p style={{ fontSize: '12px' }}>
-                                                    {(doc.file_path).split('/')[3]}
-                                                </p>
-                                            </TableCell>
-                                            {/* <TableCell sx={{ fontSize: '12px' }}>{doc?.doc_month}</TableCell> */}
-                                            <TableCell sx={{ fontSize: '12px' }}><DateDisplay isoString={doc.updated_ts} /></TableCell>
-                                            <TableCell><DownloadFile fileName={(doc.file_path).split('/')[3]} userID={doc.user_id} /></TableCell>
-                                            {/* <TableCell>
-                                            <p style={{ fontSize: '12px' }}>
-                                                {doc.remarks}
-                                            </p>
-                                        </TableCell> */}
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </div>
-                </Box>}
-            </DialogContent>
+                    </Box>
+                )}
 
+                {reports?.length > 0 && (
+                    <Box>
+                        <Typography variant="h6" color="#000" fontWeight="bold" fontSize='14px' sx={{ marginTop: '20px', marginBottom: '20px' }}>Uploaded Reports</Typography>
+                        <div style={{ width: '85%', margin: 'auto' }}>
+                            <TableContainer component={Paper}>
+                                <Table>
+                                    <TableBody>
+                                        <TableRow>
+                                            <TableCell sx={{ fontSize: '14px' }}>Report Name</TableCell>
+                                            <TableCell sx={{ fontSize: '14px' }}>Generated On</TableCell>
+                                            <TableCell sx={{ fontSize: '14px' }}>View</TableCell>
+                                        </TableRow>
+                                        {reports.map(doc => (
+                                            <TableRow key={doc.id}>
+                                                <TableCell sx={{ fontSize: '12px' }}>{(doc.file_path).split('/')[3]}</TableCell>
+                                                <TableCell sx={{ fontSize: '12px' }}><DateDisplay isoString={doc.updated_ts} /></TableCell>
+                                                <TableCell><DownloadFile fileName={(doc.file_path).split('/')[3]} fileUserId={doc.user_id} userId={loggedInUser} /></TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </div>
+                    </Box>
+                )}
+            </Box> : <Box>
+            <div style={{padding: '150px', margin: 'auto', width: '60%'}}><h4>
+                    Session Expired !! Please Logout and Login again.</h4></div></Box>}
             {/* Onboard Client Modal */}
             <Dialog open={onboardModalOpen} onClose={() => setOnboardModalOpen(false)} maxWidth="sm" fullWidth>
                 <ModalTitleStyled>Onboard New Client
@@ -908,7 +893,8 @@ const AdminDashboard = ({ open, onClose, userName, userID, role }) => {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </FullPageDialog>
+
+        </Box>
     );
 };
 
